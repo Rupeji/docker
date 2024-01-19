@@ -116,7 +116,7 @@ echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
 echo "1.  Instalar Docker" 
 echo "2.  Crear carpetas"
-echo "3.  Instalar Sonar y demás"
+echo "3.  Instalar portainer, sabnzbd, sonarr, bazarr y radarr"
 echo "4.  Instalar Portainer"
 echo
 echo "6. Salir"
@@ -195,7 +195,7 @@ case $menu_choice in
 	    pausa
             ;;
         3)
-            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando portainer, sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
             echo
 	    sleep 2            
             cd
