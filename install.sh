@@ -139,9 +139,6 @@ case $menu_choice in
 	    sleep 1
 	    newgrp docker
 	    sleep 1
-	    sudo pacman -S docker-compose --noconfirm
-	    sleep 1
-	    docker run hello-world
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
@@ -149,6 +146,9 @@ case $menu_choice in
         2)
             echo -e "${ColorNegrita}${Fondo}Creando carpetas...${ENDCOLOR}"
             echo
+	    sudo pacman -S docker-compose --noconfirm
+	    sleep 1
+	    docker run hello-world
 	    sleep 2            
             cd
             cd ..
