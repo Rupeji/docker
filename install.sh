@@ -192,10 +192,16 @@ case $menu_choice in
 	    pausa
             ;;
         3)
-            echo -e "${ColorNegrita}${Fondo}Instalando Wifite y sus complementos${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
             echo
-	    sleep 2
-            sudo pacman -S hcxtools hcxdumptool reaver macchanger hashcat john cowpatty bully wifite wireshark-cli --noconfirm #falta Pyrit
+	    sleep 2            
+            cd
+            cd ..
+	    sleep 1
+            sudo git clone https://github.com/Rupeji/docker.git
+	    sleep 1
+     	    sudo docker-compose up -d
+	    sleep 1
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
