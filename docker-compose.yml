@@ -90,4 +90,4 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /docker/appdata/qbittorrent/config:/config
-      - /docker/appdata/qbittorrent/data:/data
+      - /data/torrents:/data
