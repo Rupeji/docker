@@ -207,6 +207,8 @@ case $menu_choice in
 	    sleep 1
      	    sudo docker-compose up -d
 	    sleep 1
+     	    cd Portainer
+     	    sudo docker-compose up -d
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
