@@ -116,10 +116,10 @@ echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
 echo "1.  Instalar Docker" 
 echo "2.  Crear carpetas"
-echo "3.  Instalar Wifite"
-echo "4.  Descargar Github"
+echo "3.  Instalar Sonar y demás"
+echo "4.  Instalar Portainer"
 echo
-echo "5. Salir"
+echo "6. Salir"
 echo
 
 read menu_choice
@@ -207,18 +207,26 @@ case $menu_choice in
 	    pausa
             ;;
         4)  
+            echo -e "${ColorNegrita}${Fondo}Instalando Portainer${ENDCOLOR}"
+            echo
+	    sleep 2            
+	    docker volume create portainer_data
+	    docker run -d -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ceit
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+            echo
+	    pausa
+            ;;
+        5)  
             echo -e "${ColorNegrita}${Fondo}Descargando git${ENDCOLOR}"
             echo
-	    sleep 2
-            
+	    sleep 2            
 	    cd 
  	    git clone https://MRR4bot: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@github.com/MRR4bot/Setup.git
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
             ;;
-
-        5)
+        6)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
