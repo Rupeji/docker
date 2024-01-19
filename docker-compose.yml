@@ -3,7 +3,7 @@ services:
   radarr:
     container_name: radarr
     image: ghcr.io/hotio/radarr:latest
-    restart: unless-stopped
+    restart: always
     logging:
       driver: json-file
     ports:
@@ -19,7 +19,7 @@ services:
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr:latest
-    restart: unless-stopped
+    restart: always
     logging:
       driver: json-file
     ports:
@@ -35,7 +35,7 @@ services:
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
-    restart: unless-stopped
+    restart: always
     logging:
       driver: json-file
     ports:
@@ -51,7 +51,7 @@ services:
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
-#    restart: unless-stopped
+#    restart: always
 #    logging:
 #      driver: json-file
 #    ports:
@@ -68,6 +68,7 @@ services:
   prowlarr:
     container_name: prowlarr
     image: ghcr.io/hotio/prowlarr
+    restart: always
     ports:
       - "9696:9696"
     environment:
@@ -77,16 +78,20 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /docker/appdata/prowlarr:/config
-  qbittorrent:
-    container_name: qbittorrent
-    image: ghcr.io/hotio/qbittorrent
-    ports:
-      - "8080:8080"
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
     environment:
       - PUID=1000
       - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Spain
+      - TZ=Etc/UTC
+      - DELUGE_LOGLEVEL=error #optional
     volumes:
-      - /docker/appdata/qbittorrent:/config
-      - /data/torrents:/data
+      - /docker/appdata/deluge/config:/config
+      - /data/torrents:/downloads
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
+      - 58846:58846 #optional
+    restart: always
