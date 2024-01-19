@@ -200,6 +200,8 @@ case $menu_choice in
 	    sleep 2            
             cd
             cd ..
+	    cd ..
+	    sleep 1
 	    sleep 1
             sudo git clone https://github.com/Rupeji/docker.git
 	    sleep 1
