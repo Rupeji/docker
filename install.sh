@@ -205,6 +205,7 @@ case $menu_choice in
 	    sleep 1
             sudo git clone https://github.com/Rupeji/docker.git
 	    sleep 1
+            cd docker
      	    sudo docker-compose up -d
 	    sleep 1
      	    cd Portainer
