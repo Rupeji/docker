@@ -88,5 +88,5 @@ services:
       - UMASK=002
       - TZ=Europe/Spain
     volumes:
-      - /docker/appdata/qbittorrent/config:/config
+      - /docker/appdata/qbittorrent:/config
       - /data/torrents:/data
