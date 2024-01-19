@@ -84,7 +84,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=Europe/Spain
       - DELUGE_LOGLEVEL=error #optional
     volumes:
       - /docker/appdata/deluge/config:/config
