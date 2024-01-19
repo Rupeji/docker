@@ -77,7 +77,6 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /docker/appdata/prowlarr:/config
-      services:
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent
