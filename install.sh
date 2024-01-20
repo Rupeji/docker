@@ -114,7 +114,11 @@ clear
 echo
 echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
-echo "1.  Instalar Docker" 
+echo "1.  Crear carpetas y arreglar permisos" 
+echo "2.  Instalar Docker y Openssh"
+echo "2.  Instalar Portainer"
+echo "2.  Instalar Portainer"
+echo "2.  Instalar Portainer"
 echo "2.  Instalar Portainer"
 echo
 echo "6. Salir"
@@ -123,6 +127,20 @@ echo
 read menu_choice
 clear
 case $menu_choice in
+        1)
+            echo -e "${ColorNegrita}${Fondo}Creando carpetas...${ENDCOLOR}"
+            echo
+	    sleep 1
+
+     	    sleep 1
+            echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
+            sleep 1
+
+	    sleep 1
+            echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+	    pausa
+            ;;
         1)
             echo -e "${ColorNegrita}${Fondo}Instalando Docker y openssh${ENDCOLOR}"
             echo
@@ -167,18 +185,24 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando Portainer${ENDCOLOR}"
             echo
 	    sleep 2            
-	    sudo docker pull portainer/portainer-ce:latest || error "Failed to pull latest Portainer docker image!"
-	    sudo docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest --logo "https://pi-hosted.com/pi-hosted-logo.png" || error "Failed to run Portainer docker image!"
+	    cd
+     	    cd docker
+	    cd arr
+     	    sudo docker compose up -d
+	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
             ;;
         5)  
-            echo -e "${ColorNegrita}${Fondo}Descargando git${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent${ENDCOLOR}"
             echo
 	    sleep 2            
-	    cd 
- 	    git clone https://MRR4bot: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@github.com/MRR4bot/Setup.git
+	    cd
+     	    cd docker
+	    cd qBittorrent
+     	    sudo docker compose up -d
+	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
