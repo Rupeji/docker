@@ -116,7 +116,7 @@ echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
 echo "1.  Instalar Docker" 
 echo "2.  Crear carpetas"
-echo "3.  Instalar portainer, sabnzbd, sonarr, bazarr y radarr"
+echo "3.  Instalar Sabnzbd, Sonarr, Sazarr y Radarr"
 echo "4.  Instalar Portainer"
 echo
 echo "6. Salir"
@@ -202,7 +202,7 @@ case $menu_choice in
 	    pausa
             ;;
         3)
-            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando portainer, sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
             echo
 	    sleep 2            
             #cd
@@ -223,8 +223,8 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando Portainer${ENDCOLOR}"
             echo
 	    sleep 2            
-	    docker volume create portainer_data
-	    docker run -d -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ceit
+	    sudo docker pull portainer/portainer-ce:latest || error "Failed to pull latest Portainer docker image!"
+	    sudo docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest --logo "https://pi-hosted.com/pi-hosted-logo.png" || error "Failed to run Portainer docker image!"
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
