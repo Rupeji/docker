@@ -9,7 +9,28 @@ Tiene algún error, pero en mis archivos las rutas están bien. Sólamente serí
 1. Instalación básica de Arch Linux
 2. Mucha paciencia.
 
-### Installing
+### Instalando qBittorrent
+
+Necesitamos primero instalarlo de forma "temporal" para poder ver la contraseña temporal y poder loguear como usuario: admin y pass: CONTRASEÑA TEMPORAL
+
+Para esto instalamos qBittorrent con la primera opción del instalador que dice "qBittorrent temporal"
+![imagen](https://github.com/Rupeji/docker/assets/72431133/186cd833-348d-4b5e-a9ad-6c6b74d75d09)
+
+Una vez cambiada la contraseña, bajamos abajo del menu y le damos a guardar.
+
+Vamos a esta otra opción y lo dejamos así
+![imagen](https://github.com/Rupeji/docker/assets/72431133/e3342b23-984b-488f-bc7f-dc6883fa3f1d)
+
+Ahora toca hacer las categorías
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/163ffdf6-75fa-4774-a04c-60215c83162d)
+
+Hacemos click derecho debajo de CATEGORIES y le damos en añadir
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/7fbb36d5-ddb5-4080-85ee-9d314fa4fe22)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/f6524cd5-eae4-4f08-9e48-342a864f6927)
+
+
 
 1. Login to your portainer setup go to settings
 2. 
