@@ -116,12 +116,12 @@ echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
 echo "1.  Crear carpetas y arreglar permisos" 
 echo "2.  Instalar Docker y Openssh"
-echo "2.  Instalar Portainer"
-echo "2.  Instalar Portainer"
-echo "2.  Instalar Portainer"
-echo "2.  Instalar Portainer"
+echo "3.  Instalar Docker-compose y Portainer"
+echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
+echo "5.  Instalar qBittorrent"
+echo "6.  Instalar Portainer"
 echo
-echo "6. Salir"
+echo "7. Salir"
 echo
 
 read menu_choice
@@ -141,7 +141,7 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-        1)
+        2)
             echo -e "${ColorNegrita}${Fondo}Instalando Docker y openssh${ENDCOLOR}"
             echo
 	    sleep 2
@@ -159,12 +159,9 @@ case $menu_choice in
 	    sleep 1
 	    newgrp docker
 	    sleep 1
-            echo
-	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
-	    pausa
             ;;
-        2)
-            echo -e "${ColorNegrita}${Fondo}Creando carpetas...${ENDCOLOR}"
+        3)
+            echo -e "${ColorNegrita}${Fondo}Instalando Docker-Compose y Portainer${ENDCOLOR}"
             echo
 	    sudo pacman -S docker-compose --noconfirm
 	    sleep 1
@@ -177,14 +174,9 @@ case $menu_choice in
             echo
 	    pausa
             ;;
-        3)
-            echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
-
-            ;;
-        4)  
-            echo -e "${ColorNegrita}${Fondo}Instalando Portainer${ENDCOLOR}"
-            echo
-	    sleep 2            
+        4)
+            echo -e "${ColorNegrita}${Fondo}Instalando Sonarr, Bazarr, Radarr y Prowlarr${ENDCOLOR}"
+	    sleep 1            
 	    cd
      	    cd docker
 	    cd arr
@@ -200,6 +192,19 @@ case $menu_choice in
 	    sleep 2            
 	    cd
      	    cd docker
+	    cd arr
+     	    sudo docker compose up -d
+	    echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+            echo
+	    pausa
+            ;;
+        6)  
+            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent${ENDCOLOR}"
+            echo
+	    sleep 2            
+	    cd
+     	    cd docker
 	    cd qBittorrent
      	    sudo docker compose up -d
 	    echo
@@ -207,7 +212,7 @@ case $menu_choice in
             echo
 	    pausa
             ;;
-        6)
+        7)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
