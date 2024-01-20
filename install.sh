@@ -115,9 +115,7 @@ echo
 echo -e "${BOLDCOLOR}${BACKGROUND}Por favor, selecciona una opción${ENDCOLOR}"
 echo
 echo "1.  Instalar Docker" 
-echo "2.  Crear carpetas"
-echo "3.  Instalar Sabnzbd, Sonarr, Sazarr y Radarr"
-echo "4.  Instalar Portainer"
+echo "2.  Instalar Portainer"
 echo
 echo "6. Salir"
 echo
