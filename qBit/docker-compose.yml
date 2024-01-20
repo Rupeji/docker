@@ -10,7 +10,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/qBittorrent:/config
-      - /home/inhumano/arr/data/torrents:/data
+      - /home/inhumano/arr/data:/data
     ports:
       - 8080:8080
       - 6881:6881
