@@ -129,7 +129,7 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando Docker y openssh${ENDCOLOR}"
             echo
 	    sleep 2
-	    sudo pacman -S docker neofetch openssh --noconfirm
+	    sudo pacman -S docker nano neofetch openssh --noconfirm
 	    sleep 1
 	    sudo systemctl start docker.service
      	    sleep 1
