@@ -119,7 +119,7 @@ echo "2.  Instalar Docker y Openssh"
 echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent"
-echo "6.  Instalar Portainer"
+echo "6.  Arreglar permisos a secas"
 echo
 echo "7. Salir"
 echo
@@ -131,11 +131,21 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Creando carpetas...${ENDCOLOR}"
             echo
 	    sleep 1
-
+	    cd
+     	    mkdir arr
+	    cd arr
+     	    mkdir {data.Files}
+	    cd data
+     	    mkdir {media,torrents,usenet}
+     	    mkdir -p media/{music,movies,tv}
+     	    mkdir -p torrents/{music,movies,tv}
+     	    mkdir -p usenet/{music,movies,tv}
      	    sleep 1
             echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
             sleep 1
-
+	    cd
+	    sudo chown -R inhumano:inhumano arr
+     	    sudo chmod -R 775 arr
 	    sleep 1
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
@@ -200,17 +210,16 @@ case $menu_choice in
 	    pausa
             ;;
         6)  
-            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent${ENDCOLOR}"
-            echo
-	    sleep 2            
+            echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
+            sleep 1
 	    cd
-     	    cd docker
-	    cd qBittorrent
-     	    sudo docker compose up -d
-	    echo
-	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+	    sudo chown -R inhumano:inhumano arr
+     	    sudo chmod -R 775 arr
+	    sleep 1
             echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
+            ;;
             ;;
         7)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
@@ -221,9 +230,3 @@ case $menu_choice in
             ;;
     esac
 done
-
-
-# git clone https://github.com/mlaj10/Bspwm.git
-#
-#
-#
