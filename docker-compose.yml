@@ -88,7 +88,7 @@ services:
       - DELUGE_LOGLEVEL=error #optional
     volumes:
       - /home/inhumano/docker/appdata/deluge/config:/config
-      - /home/inhumano/data/torrents:/torrents
+      - /home/inhumano/data/torrents:/data/torrents
     ports:
       - 8112:8112
       - 6881:6881
