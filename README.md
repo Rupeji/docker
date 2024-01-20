@@ -12,6 +12,7 @@ Tiene algún error, pero en mis archivos las rutas están bien. Sólamente serí
 ### Instalando y configurando qBittorrent
 
 (la ip obviamente la de vuestra máquina y puerto 8080)
+
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/6f47b4d7-8806-4916-aa82-cf01086e5c96)
 
 
@@ -44,6 +45,7 @@ Con esto hemos terminado la parte de qBittorent, pero por supuesto, se puede per
 ### Configurando Prowlarr
 
 (la ip obviamente la de vuestra máquina y puerto 9696)
+
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/c6eec347-9abb-44af-925c-d410f4fb2ebf)
 
 Haremos una configuración mímima para que funcione con animes, el resto de contenido se configura de la misma manera
@@ -60,8 +62,35 @@ Ejemplo de añadir un server:
 
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/1b13ec77-81b3-4221-bc0e-fefa2af56ee7)
 
-En este caso añadimos "TheRARBG", para ello clickamos en el y se nos abrirá una ventana, en ella simplemente es seleccionar la "Base Url" y pulsar en "Test", si sale un tick verde, le damos a guardar y listo, sólo es repetir lo mismo con otros servidores.
+En este caso añadimos "TheRARBG", para ello clickamos en el y se nos abrirá una ventana, en ella simplemente es seleccionar la "Base Url" y pulsar en "Test", si sale un tick verde, le damos a guardar y listo, sólo es repetir lo mismo con otros servidores. Una vez terminado de añadir servidores, procedemos a cerrar esa ventana.
 
+![imagen](https://github.com/Rupeji/docker/assets/72431133/e467579b-c17b-4c41-97bc-cd6c211b341f)
+
+Ahora en Apps, tenemos que añadir los "arr" (Sonarr, Radarr, etc)
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/a2c4f612-c165-440a-b096-844453f7bfe8)
+
+Añadiremos Sonarr, pero es lo mismo para el resto.
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/3424c3a2-76b9-4ad6-ad01-1ce882924ace)
+
+Aquí en azul por defecto pone "localhost", pero yo prefiero cambiarlo por la ip de nuestra máquina.
+
+Luego en rojo, tenemos que copiar de Sonarr (o de la app que estemos añadirendo), la API Key que se encuentra en "settings" --> "General", está por abajo, la copiamos y pegamos en Prowlaar y le damos a test, si sale tick verde, le damos a guardar y listo.
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/b1369479-894e-44a7-baed-54f5280de077)
+
+Ahora nos vamos a "Download Clients" y le buscamos qBittorrent
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/b13479e5-8fa3-4def-b5d4-ad2c49f324f5)
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/016db6f8-1a20-414c-b4dd-33f50956aeff)
+
+Aquí tenemos que añadir la IP de la máquina, el usuario con el que nos logueamos en qBittorrent y la contraseña nueva que cambiamos en el apartado de qBittorremt.
+
+Pulsamos en "Test" y si sale el tick verde, pulsamos en "Save"
+
+Con esto ya estaría configurado Prowlarr, pero al igual que dije en el apartado de qBittorrent, se pueden tocar más cosas como añadir notificaciones, etc.
 
 
 1. Login to your portainer setup go to settings
