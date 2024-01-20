@@ -134,7 +134,7 @@ case $menu_choice in
 	    cd
      	    mkdir arr
 	    cd arr
-     	    mkdir {data.Files}
+     	    mkdir {data,Files}
 	    cd data
      	    mkdir {media,torrents,usenet}
      	    mkdir -p media/{music,movies,tv}
