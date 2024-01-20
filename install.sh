@@ -126,14 +126,18 @@ read menu_choice
 clear
 case $menu_choice in
         1)
-            echo -e "${ColorNegrita}${Fondo}Instalando Docker${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando Docker y openssh${ENDCOLOR}"
             echo
 	    sleep 2
-	    sudo pacman -S docker neofetch --noconfirm
+	    sudo pacman -S docker neofetch openssh --noconfirm
 	    sleep 1
 	    sudo systemctl start docker.service
-	    sleep 1
+     	    sleep 1
+     	    sudo systemctl start sshd
+     	    sleep 1
 	    sudo systemctl enable docker.service
+            sleep 1
+	    sudo systemctl enable sshd
 	    sleep 1
 	    sudo usermod -aG docker $USER
 	    sleep 1
