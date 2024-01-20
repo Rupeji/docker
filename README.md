@@ -91,7 +91,48 @@ Con esto ya estaría configurado Prowlarr, pero al igual que dije en el apartado
 
 IP DE VUESTRA MÁQUINA:8989
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/5c669e36-8047-4fdd-b29c-bdc325866b64)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/e7c03ad0-c8b9-4964-8e20-0f3bf3200308)
+
+Comenzaremos añadiendo la carpeta donde queremos que se guarden las series
+
+Serrings --> Media Management (bajamos abajo del todo) --> Add Root Folder
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/bf2f8822-4dc6-460f-a6dd-c64916cdba18)
+
+Pulsamos en Ok y se nos quedará en azulito como se ve en la captura de arriba en la parte de abajo izquierda.
+
+Si subimos un poco dentro de la categoría en la que estamos, tenemos que asegurarnos de que los "Hardlinks" estén marcados como se ve a continuación:
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/95a9d100-52f3-4798-9807-c4ad067fe2eb)
+
+Vamos a "Profiles" y aquí lo suyo es que configuremos para que nos mejore calidades y tal, esto no es imprescindible para que funcione y busque series, pero estaría bien dedicarle un tiempo a configurar.
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/39478db0-f075-45c1-a3bf-88a2f7131adb)
+
+Ahora vamos a Download Clients y añadiremos el qBittorrent
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/4182e436-c079-4ec8-bfea-2910dbe4f6bf)
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/1f446d47-553a-44b9-8950-a4613f8ab014)
+
+Aquí las opciones importantes son las marcadas en rojo, tenemos que poner nuestra IP en Host, usuario y contraseña de qBittorrent y super importante, que la categoría sea tv, ya que en qBittorrent lo tenemos así.
+
+Una vez añadido todo, pulsamos en Test y si sale tick verde, en Save.
+
+Con esto en un principio ya tenemos lo mínimo configurado.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
