@@ -92,9 +92,10 @@ Pulsamos en "Test" y si sale el tick verde, pulsamos en "Save"
 
 Con esto ya estaría configurado Prowlarr, pero al igual que dije en el apartado de qBittorrent, se pueden tocar más cosas como añadir notificaciones, etc.
 
+### Configurando Sonarr
 
-1. Login to your portainer setup go to settings
-2. 
+
+
 
 ### Information
 All templates are already configured to bind mount to various places on your drive. This branch works without the need for OMV. The following folders are all created in /portainer/
