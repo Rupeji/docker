@@ -52,7 +52,7 @@ services:
       - UMASK=002
       - TZ=Europe/Spain
     volumes:
-      - /home/inhumano/docker/appdata/prowlarr:/config
+      - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
