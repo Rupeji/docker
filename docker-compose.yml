@@ -15,7 +15,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /home/inhumano/docker/appdata/radarr:/config
-      - /home/inhumano/data:/data
+      - /home/inhumano/data:/home/inhumano/data
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr:latest
@@ -31,7 +31,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /home/inhumano/docker/appdata/sonarr:/config
-      - /home/inhumano/data:/data
+      - /home/inhumano/data:/home/inhumano/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
@@ -47,7 +47,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /home/inhumano/docker/appdata/bazarr:/config
-      - /home/inhumano/data/media:/data/media
+      - /home/inhumano/data/media:/home/inhumano/data/media
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
