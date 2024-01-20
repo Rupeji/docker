@@ -155,16 +155,19 @@ case $menu_choice in
 	    docker run hello-world
 	    sleep 2            
             cd
-            cd ..
-	    cd ..
+            #cd ..
+	    #cd ..
 	    sleep 1
 	    sudo mkdir data
-            cd ..
-	    cd ..
+            cd
+            #cd ..
+	    #cd ..
 	    sleep 1
             sudo chown -R $USER:$USER /data
 	    sleep 1
 	    sudo chmod -R a=,a+rX,u+w,g+w /data
+	    sleep 1
+	    sudo chmod -R 777 /data
 	    sleep 1
             cd data
 	    sleep 1
@@ -202,12 +205,13 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando portainer, sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
             echo
 	    sleep 2            
+            #cd
+            #cd ..
+	    #cd ..
             cd
-            cd ..
-	    cd ..
 	    sleep 1
 	    sleep 1
-            sudo git clone https://github.com/Rupeji/docker.git
+            #sudo git clone https://github.com/Rupeji/docker.git
 	    sleep 1
             cd docker
      	    sudo docker-compose up -d

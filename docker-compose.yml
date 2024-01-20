@@ -14,8 +14,8 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/radarr:/config
-      - /data:/data
+      - /home/inhumano/docker/appdata/radarr:/config
+      - /home/inhumano/data:/data
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr:latest
@@ -30,8 +30,8 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/sonarr:/config
-      - /data:/data
+      - /home/inhumano/docker/appdata/sonarr:/config
+      - /home/inhumano/data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
@@ -46,8 +46,8 @@ services:
       - TZ=Europe/Spain
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/bazarr:/config
-      - /data/media:/data/media
+      - /home/inhumano/docker/appdata/bazarr:/config
+      - /home/inhumano/data/media:/data/media
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
@@ -63,8 +63,8 @@ services:
 #      - TZ=Europe/Spain
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
-#      - /docker/appdata/sabnzbd:/config
-#      - /data/usenet:/data/usenet:rw
+#      - /home/inhumano/docker/appdata/sabnzbd:/config
+#      - /home/inhumano/data/usenet:/data/usenet:rw
   prowlarr:
     container_name: prowlarr
     image: ghcr.io/hotio/prowlarr
@@ -77,7 +77,7 @@ services:
       - UMASK=002
       - TZ=Europe/Spain
     volumes:
-      - /docker/appdata/prowlarr:/config
+      - /home/inhumano/docker/appdata/prowlarr:/config
   deluge:
     image: lscr.io/linuxserver/deluge:latest
     container_name: deluge
@@ -87,8 +87,8 @@ services:
       - TZ=Europe/Spain
       - DELUGE_LOGLEVEL=error #optional
     volumes:
-      - /docker/appdata/deluge/config:/config
-      - /data/torrents:/downloads
+      - /home/inhumano/docker/appdata/deluge/config:/config
+      - /home/inhumano/data/torrents:/downloads
     ports:
       - 8112:8112
       - 6881:6881
