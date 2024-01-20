@@ -158,16 +158,16 @@ case $menu_choice in
             #cd ..
 	    #cd ..
 	    sleep 1
-	    sudo mkdir data
+	    mkdir data
             cd
             #cd ..
 	    #cd ..
 	    sleep 1
-            sudo chown -R $USER:$USER /data
+            #sudo chown -R $USER:$USER /data
 	    sleep 1
-	    sudo chmod -R a=,a+rX,u+w,g+w /data
+	    #sudo chmod -R a=,a+rX,u+w,g+w /data
 	    sleep 1
-	    sudo chmod -R 777 /data
+	    #sudo chmod -R 777 /data
 	    sleep 1
             cd data
 	    sleep 1
