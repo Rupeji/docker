@@ -202,7 +202,7 @@ case $menu_choice in
 	    sleep 2            
 	    cd
      	    cd docker
-	    cd arr
+	    cd qBittorrent
      	    sudo docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
