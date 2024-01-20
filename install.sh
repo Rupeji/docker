@@ -220,7 +220,6 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-            ;;
         7)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
