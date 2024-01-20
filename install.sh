@@ -153,71 +153,17 @@ case $menu_choice in
 	    sudo pacman -S docker-compose --noconfirm
 	    sleep 1
 	    docker run hello-world
-	    sleep 2            
-            cd
-            #cd ..
-	    #cd ..
-	    sleep 1
-	    mkdir data
-            cd
-            #cd ..
-	    #cd ..
-	    sleep 1
-            #sudo chown -R $USER:$USER /data
-	    sleep 1
-	    #sudo chmod -R a=,a+rX,u+w,g+w /data
-	    sleep 1
-	    #sudo chmod -R 777 /data
-	    sleep 1
-            cd data
-	    sleep 1
-	    mkdir {torrents,usenet,media}
-	    sleep 1
-	    cd torrents
-	    sleep 1
-	    mkdir {books,movies,music,tv}
-	    sleep 1
-	    cd ..
-	    sleep 1
-            cd usenet
-	    sleep 1
-	    mkdir {incomplete,complete}
-	    sleep 1
-	    cd complete
-	    sleep 1
-	    mkdir {books,movies,music,tv}
-	    sleep 1
-	    cd ..
-	    cd ..
-	    sleep 1
-	    cd media
-	    sleep 1
-	    mkdir {books,movies,music,tv}
-	    sleep 1
-     	    cd ..
-            echo
-	    ls
+	    sleep 2
+     	    sudo docker pull portainer/portainer-ce:latest || error "Failed to pull latest Portainer docker image!"
+     	    sudo docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest --logo "https://pi-hosted.com/pi-hosted-logo.png" || error "Failed to run Portainer docker image!"
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
             ;;
         3)
             echo -e "${ColorNegrita}${Fondo}Clonando repo e instalando sabnzbd, sonarr, bazarr y radarr${ENDCOLOR}"
-            echo
-	    sleep 2            
-            #cd
-            #cd ..
-	    #cd ..
-            cd
-	    sleep 1
-	    sleep 1
-            #sudo git clone https://github.com/Rupeji/docker.git
-	    sleep 1
-            cd docker
-     	    sudo docker-compose up -d
-            echo
-	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
-	    pausa
+
             ;;
         4)  
             echo -e "${ColorNegrita}${Fondo}Instalando Portainer${ENDCOLOR}"
