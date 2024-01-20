@@ -11,10 +11,7 @@ Tiene algún error, pero en mis archivos las rutas están bien. Sólamente serí
 
 ### Instalando y configurando qBittorrent
 
-(la ip obviamente la de vuestra máquina y puerto 8080)
-
-![imagen](https://github.com/Rupeji/docker/assets/72431133/6f47b4d7-8806-4916-aa82-cf01086e5c96)
-
+IP DE VUESTRA MÁQUINA:8080
 
 Necesitamos primero instalarlo de forma "temporal" para poder ver la contraseña temporal y poder loguear como usuario: admin y pass: CONTRASEÑA TEMPORAL
 
@@ -44,9 +41,7 @@ Con esto hemos terminado la parte de qBittorent, pero por supuesto, se puede per
 
 ### Configurando Prowlarr
 
-(la ip obviamente la de vuestra máquina y puerto 9696)
-
-![imagen](https://github.com/Rupeji/docker/assets/72431133/c6eec347-9abb-44af-925c-d410f4fb2ebf)
+IP DE VUESTRA MÁQUINA:9696
 
 Haremos una configuración mímima para que funcione con animes, el resto de contenido se configura de la misma manera
 
@@ -94,6 +89,9 @@ Con esto ya estaría configurado Prowlarr, pero al igual que dije en el apartado
 
 ### Configurando Sonarr
 
+IP DE VUESTRA MÁQUINA:8989
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/5c669e36-8047-4fdd-b29c-bdc325866b64)
 
 
 
