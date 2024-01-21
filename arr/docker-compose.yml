@@ -143,6 +143,31 @@ services:
       - /home/inhumano/arr/Files/AppData/Config/Plex/configs:/app/data/configs
       - /home/inhumano/arr/Files/AppData/Config/Plex/transcode:/transcode
       - /home/inhumano/arr/data/media:/data
+  dash:
+    image: mauricenino/dashdot:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Spain
+    privileged: true
+    ports:
+      - 80:3001
+    volumes:
+      - /:/mnt/host:ro
+  filebrowser:
+    image: hurlenko/filebrowser
+    container_name: filebrowser
+    restart: always
+    ports:
+      - 8123:8080
+    volumes:
+      - /home/inhumano/:/data
+      - /home/inhumano/filebrowser:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+
   jdownloader:
     image: jaymoulin/jdownloader
     container_name: jdownloader
@@ -159,20 +184,6 @@ services:
             MYJD_DEVICE_NAME: Pikachu #optional
     ports:
         - 3129:3129
-  dash:
-    image: mauricenino/dashdot:latest
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Spain
-    privileged: true
-    ports:
-      - 80:3001
-    volumes:
-      - /:/mnt/host:ro
-
-
-
 
 #  sabnzbd:
 #    container_name: sabnzbd
