@@ -159,6 +159,21 @@ services:
     ports:
         - 3129:3129
 
+  dash:
+    image: mauricenino/dashdot:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Spain
+    privileged: true
+    ports:
+      - 80:3001
+    volumes:
+      - /:/mnt/host:ro
+
+
+
+
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
