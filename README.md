@@ -6,12 +6,12 @@ Aunque no lo tengo todo exacto, esta web tiene mucha info: https://trash-guides.
 
 Tiene algún error, pero en mis archivos las rutas están bien. Sólamente sería cuestión de sustituir mi usuario por el de cada uno
 
-### Prerequisitos
+## Prerequisitos
 
 1. Instalación básica de Arch Linux
 2. Mucha paciencia.
 
-### Instalando y configurando qBittorrent
+## Instalando y configurando qBittorrent
 
 IP DE VUESTRA MÁQUINA:8080
 
@@ -49,7 +49,7 @@ Hacemos click derecho debajo de CATEGORIES y le damos en añadir
 
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/204d13af-31db-423c-9d05-b376337bed39)
 
-## Decir que si queremos audiolibros/libros tendríamos que hacer sus respecvas categorías.
+Decir que si queremos audiolibros/libros tendríamos que hacer sus respecvas categorías.
 
 Ahora podemos volver a la terminal y pulsar dos veces 'ctrl+c' para terminar el proceso y hacer la instalación normal de qBittorrent.
 
@@ -107,7 +107,7 @@ Pulsamos en "Test" y si sale el tick verde, pulsamos en "Save"
 
 Con esto ya estaría configurado Prowlarr, pero al igual que dije en el apartado de qBittorrent, se pueden tocar más cosas como añadir notificaciones, etc.
 
-### Configurando Sonarr
+## Configurando Sonarr
 
 IP DE VUESTRA MÁQUINA:8989
 
