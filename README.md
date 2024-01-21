@@ -59,7 +59,7 @@ Ahora podemos volver a la terminal y pulsar dos veces 'ctrl+c' para terminar el 
 Una vez instalado de forma normal, con esto ya estaría terminada la parte de qBittorent, pero por supuesto, se puede personalizar el idioma y el resto de opciones siempre y cuando mantengamos las que he indicado antes.
 
 
-### Configurando Prowlarr
+## Configurando Prowlarr
 
 IP DE VUESTRA MÁQUINA:9696
 
