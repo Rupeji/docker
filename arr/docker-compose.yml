@@ -17,6 +17,7 @@ services:
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr
+    restart: always
     ports:
       - "8989:8989"
     environment:
@@ -30,6 +31,7 @@ services:
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr
+    restart: always
     ports:
       - "6767:6767"
     environment:
