@@ -13,22 +13,20 @@
 #    ports:
 #      - "8080:8080"
 #    restart: always
-    
 version: "3.7"
 
 services:
-  qbitmanage:
-    container_name: qbitmanage
-    image: ghcr.io/hotio/qbitmanage
+  qbittorrent:
+    container_name: qbittorrent
+    image: ghcr.io/hotio/qbittorrent
+    restart: always
+    ports:
+      - "8080:8080"
     environment:
       - PUID=1000
       - PGID=1000
       - UMASK=002
       - TZ=Europe/Madrid
-      - ARGS
     volumes:
       - /home/inhumano/arr/Files/AppData/Config:/config
-      - /home/inhumano/arr/data:/data
-    ports:
-      - "8080:8080"
-    restart: always
+      - /home/inhumano/arr/data:/data 
