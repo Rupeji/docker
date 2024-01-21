@@ -1,12 +1,31 @@
+#services:
+#  qbittorrent:
+#    image: lscr.io/linuxserver/qbittorrent:latest
+#    container_name: qbittorrent
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Europe/Madrid
+#      - WEBUI_PORT=8080
+#    volumes:
+#      - /home/inhumano/arr/Files/AppData/Config:/config
+#      - /home/inhumano/arr/data:/data
+#    ports:
+#      - "8080:8080"
+#    restart: always
+    
+version: "3.7"
+
 services:
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
+  qbitmanage:
+    container_name: qbitmanage
+    image: ghcr.io/hotio/qbitmanage
     environment:
       - PUID=1000
       - PGID=1000
+      - UMASK=002
       - TZ=Europe/Madrid
-      - WEBUI_PORT=8080
+      - ARGS
     volumes:
       - /home/inhumano/arr/Files/AppData/Config:/config
       - /home/inhumano/arr/data:/data
