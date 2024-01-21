@@ -41,15 +41,14 @@ Vamos a esta otra opción y lo dejamos así (le damos por abajo a guardar)
 
 Ahora toca hacer las categorías
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/163ffdf6-75fa-4774-a04c-60215c83162d)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/650d15f0-fb19-4683-9bc7-cabf5a2cd1a3)
 
 Hacemos click derecho debajo de CATEGORIES y le damos en añadir
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/7fbb36d5-ddb5-4080-85ee-9d314fa4fe22)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/414d1711-c44b-4d73-8a1f-6c21ec2f92b6)
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/f6524cd5-eae4-4f08-9e48-342a864f6927)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/204d13af-31db-423c-9d05-b376337bed39)
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/b55aa86d-e1ea-4518-ae33-e2595d9bde62)
 
 Con esto hemos terminado la parte de qBittorent, pero por supuesto, se puede personalizar el idioma y el resto de opciones siempre y cuando mantengamos las que he indicado antes.
 
