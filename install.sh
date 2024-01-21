@@ -191,8 +191,8 @@ case $menu_choice in
         4)
             echo -e "${ColorNegrita}${Fondo}Instalando Sonarr, Bazarr, Radarr y Prowlarr${ENDCOLOR}"
 	    sleep 1            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd arr
      	    sudo docker compose up -d
 	    echo
@@ -204,8 +204,8 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent de forma temporal${ENDCOLOR}"
             echo
 	    sleep 2            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd qBittorrent
      	    sudo docker compose up
 	    echo
@@ -217,8 +217,8 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent permanente${ENDCOLOR}"
             echo
 	    sleep 2            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd qBittorrent
      	    sudo docker compose up -d
 	    echo
@@ -230,8 +230,8 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando Jellyfin${ENDCOLOR}"
             echo
 	    sleep 2            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd jellyfin
      	    sudo docker compose up -d
 	    echo
@@ -243,8 +243,8 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Instalando Homarr${ENDCOLOR}"
             echo
 	    sleep 2            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd homarr
      	    sudo docker compose up -d
 	    echo
@@ -252,12 +252,12 @@ case $menu_choice in
             echo
 	    pausa
             ;;
-        0)  
+        9)  
             echo -e "${ColorNegrita}${Fondo}Instalando Homepage${ENDCOLOR}"
             echo
 	    sleep 2            
-	    #cd
-     	    #cd docker
+	    cd
+     	    cd docker
 	    cd homepage
      	    sudo docker compose up -d
 	    echo
@@ -276,7 +276,7 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-        12)
+        11)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
