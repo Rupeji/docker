@@ -124,9 +124,26 @@ Una vez añadido todo, pulsamos en Test y si sale tick verde, en Save.
 Con esto en un principio ya tenemos lo mínimo configurado.
 
 
+Estructura que tengo creada en mi /home/usuario/
 
-
-
+arr
+│ 
+data
+├── torrents
+│  ├── movies
+│  ├── music
+|  ├── books
+│  └── tv
+├── usenet
+│  ├── movies
+│  ├── music
+│  ├── books
+│  └── tv
+└── media
+    ├── movies
+    ├── music
+    ├── books
+    └── tv
 
 
 
