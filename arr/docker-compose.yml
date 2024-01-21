@@ -81,7 +81,20 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
-
+  jellyfin:
+    container_name: jellyfin
+    image: ghcr.io/hotio/jellyfin
+    ports:
+      - "8096:8096"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - UMASK=002
+    volumes:
+      - /home/inhumano/arr/Files/AppData/Config/Jellifin/config:/config
+      - /home/inhumano/arr/data/media:/data
+    restart: always
   jellyseerr:
     container_name: jellyseerr
     image: ghcr.io/hotio/jellyseerr
@@ -95,8 +108,6 @@ services:
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Jellyseerr/config:/config
     restart: always
-
-
 
 
 
