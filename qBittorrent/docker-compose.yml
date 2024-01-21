@@ -28,5 +28,5 @@ services:
       - UMASK=002
       - TZ=Europe/Madrid
     volumes:
-      - /home/inhumano/arr/Files/AppData/Config:/config
+      - /home/inhumano/arr/Files/AppData/Config/qBittorrent:/config
       - /home/inhumano/arr/data:/data 
