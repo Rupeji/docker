@@ -50,7 +50,12 @@ Hacemos click derecho debajo de CATEGORIES y le damos en añadir
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/204d13af-31db-423c-9d05-b376337bed39)
 
 
-Con esto hemos terminado la parte de qBittorent, pero por supuesto, se puede personalizar el idioma y el resto de opciones siempre y cuando mantengamos las que he indicado antes.
+Ahora podemos volver a la terminal y pulsar dos veces 'ctrl+c' para terminar el proceso y hacer la instalación normal de qBittorrent.
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/8c365c9d-8e26-4adc-99bd-9024afe57c3f)
+
+
+Una vez instalado de forma normal, con esto ya estaría terminada la parte de qBittorent, pero por supuesto, se puede personalizar el idioma y el resto de opciones siempre y cuando mantengamos las que he indicado antes.
 
 
 ### Configurando Prowlarr
