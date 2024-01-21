@@ -18,14 +18,21 @@ IP DE VUESTRA MÁQUINA:8080
 Necesitamos primero instalarlo de forma "temporal" para poder ver la contraseña temporal y poder loguear como usuario: admin y pass: CONTRASEÑA TEMPORAL
 
 Para esto instalamos qBittorrent con la primera opción del instalador que dice "qBittorrent temporal"
-Esta instalación de qBittorrent tienedos Web UI instaladas que podemos seleccioanr: UI VueTorrent (/app/vuetorrent) y Nightwalker (/app/nightwalker). (Por defecto viene puesta la de Vuetorrent)
+
+Veremos que la pantalla se queda como en la imagen inferior, luego sólo escopiarla e ir al qBittorrent y loguear por primera vez.
+
+![imagen](https://github.com/Rupeji/docker/assets/72431133/e3f767b8-ba03-4c72-830d-c4ce1af24636)
+
+
 
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/a2c07d3f-4d3e-4b6d-9fbe-e681fde22a8f)
 
 
-Una vez cambiada la contraseña, bajamos abajo del menu y le damos a guardar.
+Una vez cambiada la contraseña y dejadas todas las opciones como las de la imagen superior, bajamos abajo del menu y le damos a guardar.
 
-Podemos usar la visualización alternativa Vuetorrent si marcamos la opción de abajo de la imagen, pero eso mejor cuando esté todo configurado y lo queramos dejar bonito
+Esta instalación de qBittorrent tiene dos Web UI instaladas que podemos seleccioanr: UI VueTorrent (/app/vuetorrent) y Nightwalker (/app/nightwalker). (Por defecto viene puesta la de Vuetorrent)
+
+Podemos usar la visualización alternativa Vuetorrent si marcamos la opción de abajo de la imagen, pero eso cambia mucho la interface y es mejor cambiarla cuando esté todo configurado y lo queramos dejar bonito. Si ponemos la de Nightwalker, simplemente lo veremos todo modo oscuro y esta no afecta al tutorial.
 
 Vamos a esta otra opción y lo dejamos así (le damos por abajo a guardar)
 
