@@ -5,7 +5,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
 #      - JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Jellifin/config:/config
