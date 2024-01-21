@@ -143,6 +143,21 @@ services:
       - /home/inhumano/arr/Files/AppData/Config/Plex/configs:/app/data/configs
       - /home/inhumano/arr/Files/AppData/Config/Plex/transcode:/transcode
       - /home/inhumano/arr/data/media:/data
+  jdownloader:
+    image: jaymoulin/jdownloader
+    container_name: jdownloader
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Spain
+    restart: always
+    volumes:
+        - /home/inhumano/JDownloader:/opt/JDownloader/app/cfg
+        - /home/inhumano/JDownloader/Descargas:/opt/JDownloader/Downloads
+        - /home/inhumano/JDownloader:/opt/JDownloader/app/logs #optional
+        - /home/inhumano/JDownloader:/opt/JDownloader/app/extensions #optional
+    ports:
+        - 3129:3129
 
 #  sabnzbd:
 #    container_name: sabnzbd
