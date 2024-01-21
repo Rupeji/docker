@@ -1,6 +1,8 @@
 # Guía paso a paso para configurar el bicho multimedia
 
-Guía basada en este vídeo: `https://www.youtube.com/watch?v=Cth-bsLAa_M`
+Guía basada en este vídeo: https://www.youtube.com/watch?v=Cth-bsLAa_M
+
+Aunque no lo tengo todo exacto, esta web tiene mucha info: https://trash-guides.info/
 
 Tiene algún error, pero en mis archivos las rutas están bien. Sólamente sería cuestión de sustituir mi usuario por el de cada uno
 
