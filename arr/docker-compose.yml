@@ -28,6 +28,32 @@ services:
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Sonarr:/config
       - /home/inhumano/arr/data:/data
+  lidarr:
+    container_name: lidarr
+    image: ghcr.io/hotio/lidarr
+    ports:
+      - "8686:8686"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Madrid
+    volumes:
+      - /home/inhumano/arr/Files/AppData/Config/Lidarr:/config
+      - /home/inhumano/arr/data:/data
+  readarr:
+    container_name: readarr
+    image: ghcr.io/hotio/readarr
+    ports:
+      - "8787:8787"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Madrid
+    volumes:
+      - /home/inhumano/arr/Files/AppData/Config/Readarr:/config
+      - /home/inhumano/arr/data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr
@@ -41,7 +67,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Bazarr:/config
-      - /home/inhumano/arr/data:/data
+      - /home/inhumano/arr/data:/data  
   prowlarr:
     container_name: prowlarr
     image: ghcr.io/hotio/prowlarr
@@ -55,6 +81,25 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
+  jellyseerr:
+    container_name: jellyseerr
+    image: ghcr.io/hotio/jellyseerr
+    ports:
+      - "5055:5055"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Madrid
+    volumes:
+      - /home/inhumano/arr/Files/AppData/Config/Jellyseerr:/config
+
+
+
+
+
+
+
 #  sabnzbd:
 #    container_name: sabnzbd
 #    image: ghcr.io/hotio/sabnzbd:latest
