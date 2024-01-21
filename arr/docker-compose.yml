@@ -133,7 +133,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - VERSION=docker
-      - PLEX_CLAIM= #optional
+      - PLEX_CLAIM= claim-btx1LbsALbU2g_HvQJmv #optional
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Plex/configs:/app/data/configs
       - /home/inhumano/arr/Files/AppData/Config/Plex/transcode:/transcode
