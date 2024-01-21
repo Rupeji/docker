@@ -146,21 +146,19 @@ services:
   jdownloader:
     image: jaymoulin/jdownloader
     container_name: jdownloader
-    environment: 
-            FILE_MYJD_USER: myjd-user #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
-            FILE_MYJD_PASSWORD: myjd-password #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
-            MYJD_USER: ruben.peralta.jimenez@gmail.com #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
-            MYJD_PASSWORD: Descargas #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
-            MYJD_DEVICE_NAME: Pickachu #optional
-    ports:
-        - 3129:3129 
     restart: always
+    user: 1000:1000
     volumes:
         - /home/inhumano/JDownloader:/opt/JDownloader/app/cfg
-        - /home/inhumano/JDownloader/Descargas:/opt/JDownloader/Downloads
+        - /home/inhumano/Descargas:/opt/JDownloader/Downloads
         - /home/inhumano/JDownloader/logs:/opt/JDownloader/app/logs #optional
-        - /home/inhumano/JDownloader//extensions:/opt/JDownloader/app/extensions #optional
-
+        - /home/inhumano/JDownloader/extensions:/opt/JDownloader/app/extensions #optional
+    environment:
+            MYJD_USER: ruben.peralta.jimenez@gmail.com #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            MYJD_PASSWORD: Descargas #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            MYJD_DEVICE_NAME: Pikachu #optional
+    ports:
+        - 3129:3129
   dash:
     image: mauricenino/dashdot:latest
     environment:
