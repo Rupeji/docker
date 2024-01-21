@@ -270,11 +270,11 @@ case $menu_choice in
             sleep 1
 	    cd
 	    sudo chown -R inhumano:inhumano arr     
-	    sudo chown -R inhumano:inhumano grafana
-	    sudo chown -R inhumano:inhumano prometheus
+	    sudo chown -R inhumano:inhumano JDownloader
+	    sudo chown -R inhumano:inhumano filebrowser
      	    sudo chmod -R 775 arr
-     	    sudo chmod -R 775 grafana
-	    sudo chmod -R 775 prometheus
+     	    sudo chmod -R 775 JDownloader
+	    sudo chmod -R 775 filebrowser
 	    sleep 1
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
