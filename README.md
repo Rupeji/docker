@@ -24,7 +24,8 @@ Una vez cambiada la contraseña, bajamos abajo del menu y le damos a guardar.
 
 Vamos a esta otra opción y lo dejamos así (le damos por abajo a guardar)
 
-![imagen](https://github.com/Rupeji/docker/assets/72431133/e3342b23-984b-488f-bc7f-dc6883fa3f1d)
+![imagen](https://github.com/Rupeji/docker/assets/72431133/1398fe3a-b43c-4edb-8724-fef273d0a871)
+
 
 Ahora toca hacer las categorías
 
