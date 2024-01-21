@@ -120,9 +120,10 @@ echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
-echo "7.  Arreglar permisos a secas"
+echo "7.  Instalar Jellyfin"
+echo "8.  Arreglar permisos a secas"
 echo
-echo "8. Salir"
+echo "9. Salir"
 echo
 
 read menu_choice
@@ -224,6 +225,19 @@ case $menu_choice in
 	    pausa
             ;;
         7)  
+            echo -e "${ColorNegrita}${Fondo}Instalando Jellyfin${ENDCOLOR}"
+            echo
+	    sleep 2            
+	    cd
+     	    cd docker
+	    cd jellyfin
+     	    sudo docker compose up -d
+	    echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+            echo
+	    pausa
+            ;;
+        8)  
             echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
             sleep 1
 	    cd
@@ -234,7 +248,7 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-        8)
+        9)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
