@@ -118,10 +118,11 @@ echo "1.  Crear carpetas y arreglar permisos"
 echo "2.  Instalar Docker y Openssh"
 echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
-echo "5.  Instalar qBittorrent"
-echo "6.  Arreglar permisos a secas"
+echo "5.  Instalar qBittorrent temporal"
+echo "6.  Instalar qBittorrent permanente"
+echo "7.  Arreglar permisos a secas"
 echo
-echo "7. Salir"
+echo "8. Salir"
 echo
 
 read menu_choice
@@ -197,7 +198,20 @@ case $menu_choice in
 	    pausa
             ;;
         5)  
-            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent de forma temporal${ENDCOLOR}"
+            echo
+	    sleep 2            
+	    cd
+     	    cd docker
+	    cd qBittorrent
+     	    sudo docker compose up
+	    echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+            echo
+	    pausa
+            ;;
+        6)  
+            echo -e "${ColorNegrita}${Fondo}Instalando qBittorrent permanente${ENDCOLOR}"
             echo
 	    sleep 2            
 	    cd
@@ -209,7 +223,7 @@ case $menu_choice in
             echo
 	    pausa
             ;;
-        6)  
+        7)  
             echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
             sleep 1
 	    cd
@@ -220,7 +234,7 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-        7)
+        8)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
