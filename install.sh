@@ -121,9 +121,11 @@ echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
 echo "7.  Instalar Jellyfin"
-echo "8.  Arreglar permisos a secas"
+echo "8.  Instalar Homarr"
 echo
-echo "9. Salir"
+echo "9.  Arreglar permisos a secas"
+echo
+echo "10. Salir"
 echo
 
 read menu_choice
@@ -237,6 +239,19 @@ case $menu_choice in
 	    pausa
             ;;
         8)  
+            echo -e "${ColorNegrita}${Fondo}Instalando Homarr${ENDCOLOR}"
+            echo
+	    sleep 2            
+	    cd
+     	    cd docker
+	    cd homarr
+     	    sudo docker compose up -d
+	    echo
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
+            echo
+	    pausa
+            ;;
+        9)  
             echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
             sleep 1
 	    cd
@@ -247,7 +262,7 @@ case $menu_choice in
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
 	    pausa
             ;;
-        9)
+        10)
             echo -e "${ColorNegrita}${Fondo}Chao pescao${ENDCOLOR}"
             echo
 	    sleep 2
