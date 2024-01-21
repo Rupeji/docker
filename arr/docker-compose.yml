@@ -10,7 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - UMASK=002
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Radarr:/config
       - /home/inhumano/arr/data:/data
@@ -24,7 +24,7 @@ services:
       - PUID=1000
       - PGID=1000
       - UMASK=002
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Sonarr:/config
       - /home/inhumano/arr/data:/data
@@ -38,7 +38,7 @@ services:
       - PUID=1000
       - PGID=1000
       - UMASK=002
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Bazarr:/config
       - /home/inhumano/arr/data:/data
@@ -52,7 +52,7 @@ services:
       - PUID=1000
       - PGID=1000
       - UMASK=002
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
 #  sabnzbd:
@@ -67,7 +67,7 @@ services:
 #    environment:
 #      - PUID=1000
 #      - PGID=1000
-#      - TZ=Europe/Spain
+#      - TZ=Europe/Madrid
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
 #      - /home/inhumano/docker/appdata/sabnzbd:/config
@@ -78,7 +78,7 @@ services:
 #    environment:
 #      - PUID=1000
 #      - PGID=1000
-#      - TZ=Europe/Spain
+#      - TZ=Europe/Madrid
 #      - DELUGE_LOGLEVEL=error #optional
 #    volumes:
 #      - /home/inhumano/docker/appdata/deluge/config:/config
