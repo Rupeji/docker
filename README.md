@@ -49,6 +49,7 @@ Hacemos click derecho debajo de CATEGORIES y le damos en añadir
 
 ![imagen](https://github.com/Rupeji/docker/assets/72431133/204d13af-31db-423c-9d05-b376337bed39)
 
+### Decir que si queremos audiolibros/libros tendríamos que hacer sus respecvas categorías.
 
 Ahora podemos volver a la terminal y pulsar dos veces 'ctrl+c' para terminar el proceso y hacer la instalación normal de qBittorrent.
 
