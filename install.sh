@@ -120,9 +120,9 @@ echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
-echo "7.  Instalar Jellyfin"
-echo "8.  Instalar Homarr"
-echo "9.  Instalar Homepage"
+echo "7.  Instalar nada de momento"
+echo "8.  Instalar Grafana"
+echo "9.  Instalar Prometheus"
 echo
 echo "10.  Arreglar permisos a secas"
 echo
@@ -194,7 +194,7 @@ case $menu_choice in
 	    cd
      	    cd docker
 	    cd arr
-     	    sudo docker compose up -d
+     	    docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
@@ -207,7 +207,7 @@ case $menu_choice in
 	    cd
      	    cd docker
 	    cd qBittorrent
-     	    sudo docker compose up
+     	    docker compose up
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
@@ -220,7 +220,7 @@ case $menu_choice in
 	    cd
      	    cd docker
 	    cd qBittorrent
-     	    sudo docker compose up -d
+     	    docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
@@ -240,26 +240,26 @@ case $menu_choice in
 	    pausa
             ;;
         8)  
-            echo -e "${ColorNegrita}${Fondo}Instalando Homarr${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando Grafana${ENDCOLOR}"
             echo
 	    sleep 2            
 	    cd
      	    cd docker
-	    cd homarr
-     	    sudo docker compose up -d
+	    cd grafana
+     	    docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
             ;;
         9)  
-            echo -e "${ColorNegrita}${Fondo}Instalando Homepage${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando Prometheus${ENDCOLOR}"
             echo
 	    sleep 2            
 	    cd
      	    cd docker
-	    cd homepage
-     	    sudo docker compose up -d
+	    cd prometheus
+     	    docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
@@ -269,8 +269,12 @@ case $menu_choice in
             echo -e "${ColorNegrita}${Fondo}Arreglando permisos...${ENDCOLOR}"
             sleep 1
 	    cd
-	    sudo chown -R inhumano:inhumano arr
+	    sudo chown -R inhumano:inhumano arr     
+	    sudo chown -R inhumano:inhumano grafana
+	    sudo chown -R inhumano:inhumano prometheus
      	    sudo chmod -R 775 arr
+     	    sudo chmod -R 775 grafana
+	    sudo chmod -R 775 prometheus
 	    sleep 1
             echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
