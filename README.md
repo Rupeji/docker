@@ -124,7 +124,7 @@ Una vez añadido todo, pulsamos en Test y si sale tick verde, en Save.
 Con esto en un principio ya tenemos lo mínimo configurado.
 
 
-Estructura que tengo creada en mi /home/usuario/
+Estructura que tengo creada en mi /home/usuario/ para organizar los archivos de pelis, series, etc.
 
 arr
 │ 
