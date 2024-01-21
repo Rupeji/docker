@@ -114,7 +114,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
@@ -131,7 +131,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=Europe/Madrid
       - VERSION=docker
       - PLEX_CLAIM= claim-btx1LbsALbU2g_HvQJmv #optional
     volumes:
@@ -143,7 +143,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/Spain
+      - TZ=Europe/Madrid
     privileged: true
     ports:
       - 80:3001
