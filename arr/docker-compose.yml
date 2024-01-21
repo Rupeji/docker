@@ -81,6 +81,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
+
   jellyseerr:
     container_name: jellyseerr
     image: ghcr.io/hotio/jellyseerr
@@ -89,12 +90,11 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - UMASK=002
       - TZ=Europe/Madrid
+      - UMASK=002
     volumes:
-      - /home/inhumano/arr/Files/AppData/Config/Jellyseerr:/config
-
-
+      - /home/inhumano/arr/Files/AppData/Config/Jellyseerr/config:/config
+    restart: always
 
 
 
