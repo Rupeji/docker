@@ -123,6 +123,26 @@ services:
       - /home/inhumano/arr/Files/AppData/Config/Homarr/data:/data
     ports:
       - "7575:7575"
+  plex:
+    container_name: plex
+    image: ghcr.io/hotio/plex
+    ports:
+      - "32400:32400"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Spain
+      - PLEX_CLAIM_TOKEN
+      - PLEX_ADVERTISE_URL
+      - PLEX_NO_AUTH_NETWORKS
+      - PLEX_BETA_INSTALL=false
+      - PLEX_PURGE_CODECS=false
+    restart: always
+    volumes:
+      - /home/inhumano/arr/Files/AppData/Config/Plex/configs:/app/data/configs
+      - /home/inhumano/arr/Files/AppData/Config/Plex/transcode:/transcode
+      - /home/inhumano/arr/data/media:/data
 
 #  sabnzbd:
 #    container_name: sabnzbd
