@@ -167,7 +167,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
-
   jdownloader:
     image: jaymoulin/jdownloader
     container_name: jdownloader
