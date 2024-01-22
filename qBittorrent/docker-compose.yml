@@ -18,7 +18,7 @@ version: "3.7"
 services:
   qbittorrent:
     container_name: qbittorrent
-    image: ghcr.io/hotio/qbittorrent
+    image: ghcr.io/hotio/qbittorrent:latest
     restart: always
     ports:
       - "8080:8080"
