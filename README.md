@@ -142,26 +142,6 @@ Una vez añadido todo, pulsamos en Test y si sale tick verde, en Save.
 Con esto en un principio ya tenemos lo mínimo configurado.
 
 
-Estructura que tengo creada en mi /home/usuario/ para organizar los archivos de pelis, series, etc.
-
-arr
-│ 
-data
-├── torrents
-│  ├── movies
-│  ├── music
-|  ├── books
-│  └── tv
-├── usenet
-│  ├── movies
-│  ├── music
-│  ├── books
-│  └── tv
-└── media
-    ├── movies
-    ├── music
-    ├── books
-    └── tv
 
 
 
@@ -173,33 +153,20 @@ data
 
 
 
-### Information
-All templates are already configured to bind mount to various places on your drive. This branch works without the need for OMV. The following folders are all created in /portainer/
 
-* **Files** - General file storage.
-  * **AppData** - Subfolder where application data (unrelated to served data) is stored.
-    * **Config** - Subfolder where configuration files for every container are stored.
-* **Downloads** - Where bittorrent and usenet downloaders download files to.
-* **TV** - Where tv shows are stored/moved to after downloaded.
-* **Movies** - Where movies are stored/moved to after downloaded.
-* **Music** - Where music is stored/moved to after downloaded.
-* **Books** - Where books are stored/moved to after downloaded.
-* **Comics** - Where comics are stored/moved to after downloaded.
-* **Podcasts** - Where podcasts are stored/moved to after downloaded.
-## App List
+
+
+
+
 
   - Bazarr 
   - Filebrowser 
-  - Headphones 
   - Homer 
   - Jellyfin
   - Jellyseerr
   - kodi-headless 
   - Lidarr 
-  - Nextcloud 
   - Pihole 
-  - Plex 
-  - Plexrequests 
   - Prowlarr 
   - Qbittorrent 
   - Radarr 
