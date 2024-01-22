@@ -121,9 +121,9 @@ echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
 echo "7.  Instalar Paru"
-echo "8.  Instalar Grafana"
-echo "9.  Instalar Prometheus"
+echo "8.  Instalar nada"
 echo
+echo "9.  Actualizar sistema"
 echo "10.  Arreglar permisos a secas"
 echo
 echo "11. Salir"
@@ -253,13 +253,9 @@ case $menu_choice in
 	    pausa
             ;;
         9)  
-            echo -e "${ColorNegrita}${Fondo}Instalando Prometheus${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Actualizando sistema...${ENDCOLOR}"
             echo
-	    sleep 2            
-	    cd
-     	    cd docker
-	    cd prometheus
-     	    docker compose up -d
+	    sudo pacman -Syu --noconfirm
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
