@@ -120,7 +120,7 @@ echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
-echo "7.  Instalar nada de momento"
+echo "7.  Instalar Paru"
 echo "8.  Instalar Grafana"
 echo "9.  Instalar Prometheus"
 echo
@@ -227,13 +227,13 @@ case $menu_choice in
 	    pausa
             ;;
         7)  
-            echo -e "${ColorNegrita}${Fondo}Instalando Jellyfin${ENDCOLOR}"
+            echo -e "${ColorNegrita}${Fondo}Instalando Paru${ENDCOLOR}"
             echo
 	    sleep 2            
-	    cd
-     	    cd docker
-	    cd jellyfin
-     	    sudo docker compose up -d
+	    cd "$HOME" || exit
+	    git clone https://aur.archlinux.org/paru-bin.git
+	    cd paru-bin || exit
+	    makepkg -si --noconfirm
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
