@@ -123,21 +123,6 @@ services:
       - /home/inhumano/arr/Files/AppData/Config/Homarr/data:/data
     ports:
       - "7575:7575"
-  plex:
-    image: lscr.io/linuxserver/plex:latest
-    container_name: plex
-    network_mode: host
-    restart: always
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - VERSION=docker
-      - PLEX_CLAIM= claim-btx1LbsALbU2g_HvQJmv #optional
-    volumes:
-      - /home/inhumano/arr/Files/AppData/Config/Plex/configs:/app/data/configs
-      - /home/inhumano/arr/Files/AppData/Config/Plex/transcode:/transcode
-      - /home/inhumano/arr/data/media:/data
   dash:
     image: mauricenino/dashdot:latest
     environment:
