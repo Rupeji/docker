@@ -16,7 +16,7 @@ services:
       - /home/inhumano/arr/data:/data
   sonarr:
     container_name: sonarr
-    image: ghcr.io/hotio/sonarr
+    image: ghcr.io/hotio/sonarr:latest
     restart: always
     ports:
       - "8989:8989"
@@ -30,7 +30,7 @@ services:
       - /home/inhumano/arr/data:/data
   lidarr:
     container_name: lidarr
-    image: ghcr.io/hotio/lidarr
+    image: ghcr.io/hotio/lidarr:latest
     ports:
       - "8686:8686"
     environment:
@@ -43,7 +43,7 @@ services:
       - /home/inhumano/arr/data:/data
   readarr:
     container_name: readarr
-    image: ghcr.io/hotio/readarr
+    image: ghcr.io/hotio/readarr:latest
     ports:
       - "8787:8787"
     environment:
@@ -56,7 +56,7 @@ services:
       - /home/inhumano/arr/data:/data
   bazarr:
     container_name: bazarr
-    image: ghcr.io/hotio/bazarr
+    image: ghcr.io/hotio/bazarr:latest
     restart: always
     ports:
       - "6767:6767"
@@ -70,7 +70,7 @@ services:
       - /home/inhumano/arr/data:/data  
   prowlarr:
     container_name: prowlarr
-    image: ghcr.io/hotio/prowlarr
+    image: ghcr.io/hotio/prowlarr:latest
     restart: always
     ports:
       - "9696:9696"
@@ -83,7 +83,7 @@ services:
       - /home/inhumano/arr/Files/AppData/Config/Prowlarr:/config
   jellyfin:
     container_name: jellyfin
-    image: ghcr.io/hotio/jellyfin
+    image: ghcr.io/hotio/jellyfin:latest
     ports:
       - "8096:8096"
     environment:
@@ -97,7 +97,7 @@ services:
     restart: always
   jellyseerr:
     container_name: jellyseerr
-    image: ghcr.io/hotio/jellyseerr
+    image: ghcr.io/hotio/jellyseerr:latest
     ports:
       - "5055:5055"
     environment:
@@ -135,7 +135,7 @@ services:
     volumes:
       - /:/mnt/host:ro
   filebrowser:
-    image: hurlenko/filebrowser
+    image: hurlenko/filebrowser:latest
     container_name: filebrowser
     restart: always
     ports:
@@ -148,7 +148,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
   jdownloader:
-    image: jaymoulin/jdownloader
+    image: jaymoulin/jdownloader:latest
     container_name: jdownloader
     restart: always
     user: 1000:1000
