@@ -268,6 +268,8 @@ case $menu_choice in
 	    sudo chown -R inhumano:inhumano arr     
 	    sudo chown -R inhumano:inhumano JDownloader
 	    sudo chown -R inhumano:inhumano filebrowser
+	    sudo chown -R inhumano:inhumano Descargas
+     	    sudo chmod -R 775 Descargas
      	    sudo chmod -R 775 arr
      	    sudo chmod -R 775 JDownloader
 	    sudo chmod -R 775 filebrowser
