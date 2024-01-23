@@ -183,7 +183,7 @@ case $menu_choice in
 	    docker run hello-world
 	    sleep 2
      	    sudo docker pull portainer/portainer-ce:latest || error "Failed to pull latest Portainer docker image!"
-     	    sudo docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest --logo "https://pi-hosted.com/pi-hosted-logo.png" || error "Failed to run Portainer docker image!"
+     	    sudo docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest --logo "https://upload.wikimedia.org/wikipedia/commons/5/5d/Al-logo.svg" || error "Failed to run Portainer docker image!"
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
             echo
 	    pausa
