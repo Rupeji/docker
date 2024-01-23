@@ -135,6 +135,7 @@ case $menu_choice in
         1)
             echo -e "${ColorNegrita}${Fondo}Creando carpetas...${ENDCOLOR}"
             echo
+	    sudo pacman -Syu --noconfirm
 	    sleep 1
 	    cd
      	    mkdir arr
