@@ -154,8 +154,8 @@ case $menu_choice in
      	    sudo chmod -R 775 arr
 	    sleep 1
             echo
-	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
-	    pausa
+	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para reiniciar...${ENDCOLOR}"
+	    reboot
             ;;
         2)
             echo -e "${ColorNegrita}${Fondo}Instalando Docker y openssh${ENDCOLOR}"
