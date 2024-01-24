@@ -1,0 +1,105 @@
+version: "3"
+
+networks:
+  private_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/24
+
+services:
+  unbound:
+    image: "klutchell/unbound"
+    container_name: unbound
+    restart: always
+    hostname: "unbound"
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.200
+
+  wg-easy:
+    depends_on: [unbound, pihole]
+    environment:
+      # ⚠️ Required:
+      # Change this to your host's public address
+      - WG_HOST= my.ddns.net
+      - PASSWORD=10h30
+      - WG_PORT=51820
+      - WG_DEFAULT_ADDRESS=10.6.0.x
+      - WG_DEFAULT_DNS=10.2.0.100
+      
+      # Optional:
+      # - WG_ALLOWED_IPS=192.168.15.0/24, 10.0.1.0/24
+      # - WG_INTERFACE=wg0
+      # - WG_MTU=1420
+      # - WG_ALLOWED_IPS=192.168.15.0/24, 10.0.1.0/24
+      # - WG_PERSISTENT_KEEPALIVE=25
+      # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
+      # - WG_POST_UP=echo "Post Up" > /etc/wireguard/post-up.txt
+      # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
+      # - WG_POST_DOWN=echo "Post Down" > /etc/wireguard/post-down.txt
+
+    image: ghcr.io/wg-easy/wg-easy
+    container_name: wg-easy
+    volumes:
+      - .:/etc/wireguard
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: always
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    dns:
+      - 10.2.0.100 # Points to pihole
+      - 10.2.0.200 # Points to unbound
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.3
+
+  pihole:
+    depends_on: [unbound]
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: always
+    hostname: pihole
+    dns:
+      - 127.0.0.1
+      - 10.2.0.200 # Points to unbound
+    environment:
+      TZ: "Asia/Hong_Kong"
+      WEBPASSWORD: "" # Blank password - Can be whatever you want.
+      ServerIP: 10.2.0.100 # Internal IP of pihole
+      DNS1: 10.2.0.200 # Unbound IP
+      DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
+    # Volumes store your data between container upgrades
+    volumes:
+      - "./etc-pihole/:/etc/pihole/"
+      - "./etc-dnsmasq.d/:/etc/dnsmasq.d/"
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.100
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    environment:
+      - PUID=1000 #optional
+      - PGID=1000 #optional
+      - TZ=Europe/Madrid #optional
+      - SUBDOMAINS=inhumano.duckdns.org,rubenperalta.duckdns.org,rupeserver.duckdns.org,inhumanowireguard.duckdns.org
+      - TOKEN=poneltockn
+      #- UPDATE_IP=ipv4 #optional
+      - LOG_FILE=false #optional
+    volumes:
+      - /home/inhumano/Duckdns/config:/config #optional
+    restart: always
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.5
