@@ -120,7 +120,7 @@ echo "3.  Instalar Docker-compose y Portainer"
 echo "4.  Instalar Sonarr, Bazarr, Radarr y Prowlarr"
 echo "5.  Instalar qBittorrent temporal"
 echo "6.  Instalar qBittorrent permanente"
-echo "7.  Instalar Pihole"
+echo "7.  Instalar Wirehole"
 echo "8.  Instalar Paru"
 echo
 echo "9.  Actualizar sistema"
@@ -233,7 +233,7 @@ case $menu_choice in
 	    sleep 2            
 	    cd
      	    cd docker
-	    cd Pihole
+	    cd Wirehole
      	    docker compose up -d
 	    echo
 	    echo -e "${BOLDCOLOR}${BACKGROUND}Pulsa [Enter] para continuar...${ENDCOLOR}"
