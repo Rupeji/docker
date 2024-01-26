@@ -271,7 +271,11 @@ case $menu_choice in
 	    sudo chown -R inhumano:inhumano filebrowser
 	    sudo chown -R inhumano:inhumano Descargas
 	    sudo chown -R inhumano:inhumano Wireguard
-	    sudo chmod -R 775 Descargas
+	    sudo chown -R inhumano:inhumano Pihole
+	    sudo chown -R inhumano:inhumano Duckdns
+	    sudo chmod -R 775 Pihole
+     	    sudo chmod -R 775 Duckdns     
+            sudo chmod -R 775 Descargas
      	    sudo chmod -R 775 Wireguard
      	    sudo chmod -R 775 arr
      	    sudo chmod -R 775 JDownloader
