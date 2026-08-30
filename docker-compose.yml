@@ -1,8 +1,10 @@
-version: '3.8'
-
+yaml
 networks:
   default:
     name: homeserver_network
+
+volumes:
+  immich_db:
 
 services:
   # --- PORTAINER (Gestión de Contenedores) ---
@@ -30,7 +32,7 @@ services:
       - "8080:80/tcp"
     environment:
       TZ: 'Europe/Madrid'
-      WEBPASSWORD: 'TuContraseñaSeguraAquí'
+      WEBPASSWORD: 'Pacopicopoco.7' # <- CAMBIA ESTO
     volumes:
       - ./data/pihole:/etc/pihole
       - ./data/dnsmasq.d:/etc/dnsmasq.d
@@ -48,9 +50,8 @@ services:
       - ./data/heimdall:/config
     ports:
       - "8090:80"
-      - "8443:443"
 
-  # --- NGINX PROXY MANAGER (Gestor de Dominios y SSL) ---
+  # --- NGINX PROXY MANAGER (Proxy Inverso y SSL) ---
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
@@ -63,18 +64,18 @@ services:
       - ./data/nginx/data:/data
       - ./data/nginx/letsencrypt:/etc/letsencrypt
 
-  # --- IMMICH (Servidor de Fotos) ---
+  # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
     image: ghcr.io/immich-app/immich-server:release
     container_name: immich_server
     volumes:
-      - ./data/immich/photos:/usr/src/app/upload # Aquí se guardarán tus fotos
+      - ./data/immich/photos:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - DB_DATA_LOCATION=./data/immich/postgres
+      - DB_DATA_LOCATION=immich_db
       - DB_DATABASE_NAME=immich
       - DB_USERNAME=postgres
-      - DB_PASSWORD=immich_secure_pass # Cambia esto si quieres
+      - DB_PASSWORD=immich_secure_pass
       - DB_HOSTNAME=immich-database
       - REDIS_HOSTNAME=immich-redis
       - IMMICH_MACHINE_LEARNING_URL=http://immich-machine-learning:3003
@@ -85,7 +86,7 @@ services:
       - immich-redis
     restart: always
 
-  # --- IMMICH: APRENDIZAJE AUTOMÁTICO (IA) ---
+  # --- IMMICH: INTELIGENCIA ARTIFICIAL ---
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:release
     container_name: immich_machine_learning
@@ -100,12 +101,12 @@ services:
     environment:
       - POSTGRES_DB=immich
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=immich_secure_pass # Debe coincidir con DB_PASSWORD
+      - POSTGRES_PASSWORD=immich_secure_pass
     volumes:
-      - ./data/immich/postgres:/var/lib/postgresql/data
+      - immich_db:/var/lib/postgresql/data
     restart: always
 
-  # --- IMMICH: REDIS (Caché y tareas) ---
+  # --- IMMICH: REDIS ---
   immich-redis:
     image: redis:7-alpine
     container_name: immich_redis
