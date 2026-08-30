@@ -1,4 +1,3 @@
-yaml
 networks:
   default:
     name: homeserver_network
@@ -7,6 +6,18 @@ volumes:
   immich_db:
 
 services:
+  # --- WATCHTOWER (Actualizaciones Automáticas de Contenedores) ---
+  watchtower:
+    image: containerd/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true # Borra imágenes viejas para ahorrar espacio en el SSD
+      - WATCHTOWER_POLL_INTERVAL=2592000 # Escanea actualizaciones exactamente cada 30 días
+      - TZ=Europe/Madrid
+
   # --- PORTAINER (Gestión de Contenedores) ---
   portainer:
     image: portainer/portainer-ce:latest
@@ -29,10 +40,10 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "8080:80/tcp"
+      - "8080:80/tcp" # Panel web movido al 8080 para evitar conflictos con Nginx
     environment:
       TZ: 'Europe/Madrid'
-      WEBPASSWORD: 'Pacopicopoco.7' # <- CAMBIA ESTO
+      WEBPASSWORD: 'TuContraseñaSeguraParaPihole' # <- CAMBIA ESTO
     volumes:
       - ./data/pihole:/etc/pihole
       - ./data/dnsmasq.d:/etc/dnsmasq.d
@@ -58,7 +69,7 @@ services:
     restart: always
     ports:
       - '80:80'
-      - '81:81'
+      - '81:81'   # Panel de administración de dominios
       - '443:443'
     volumes:
       - ./data/nginx/data:/data
@@ -94,19 +105,19 @@ services:
       - ./data/immich/cache:/cache
     restart: always
 
-  # --- IMMICH: BASE DE DATOS ---
+  # --- IMMICH: BASE DE DATOS OFICIAL (Requisito obligatorio de Immich) ---
   immich-database:
-    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
     container_name: immich_database
     environment:
       - POSTGRES_DB=immich
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=immich_secure_pass
+      - POSTGRES_PASSWORD=immich_secure_pass # Debe coincidir con DB_PASSWORD
     volumes:
       - immich_db:/var/lib/postgresql/data
     restart: always
 
-  # --- IMMICH: REDIS ---
+  # --- IMMICH: REDIS (Cola de tareas) ---
   immich-redis:
     image: redis:7-alpine
     container_name: immich_redis
