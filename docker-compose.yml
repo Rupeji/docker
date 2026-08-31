@@ -48,19 +48,29 @@ services:
       - ./data/pihole:/etc/pihole
       - ./data/dnsmasq.d:/etc/dnsmasq.d
 
-  # --- HEIMDALL (Panel de Inicio / Dashboard) ---
-  heimdall:
-    image: lscr.io/linuxserver/heimdall:latest
-    container_name: heimdall
+  # --- HOMARR (Panel de Control Principal con Widgets) ---
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
     restart: always
-    environment:
-      - PUID=1000
-      - PGID=966
-      - TZ=Europe/Madrid
-    volumes:
-      - ./data/heimdall:/config
     ports:
-      - "8090:80"
+      - '7575:7575'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/homarr/appdata:/appdata
+    environment:
+      - TZ=Europe/Madrid
+      - SECRET_ENCRYPTION_KEY=9a4f7e2b1c8d3f6a5e0b2c4d6f8a0e1b3c5d7e9f2a4b6c8d0e1f3a5b7c9d1e2f
+
+  # --- DASHDOT (Telemetría de Almacenamiento, RAM y CPU para Homarr) ---
+  dashdot:
+    image: maik95/dashdot:latest
+    container_name: dashdot
+    restart: always
+    ports:
+      - '3001:3001'
+    volumes:
+      - /:/mnt/host:ro
 
   # --- NGINX PROXY MANAGER (Proxy Inverso y SSL) ---
   nginx-proxy-manager:
