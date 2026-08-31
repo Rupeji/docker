@@ -64,9 +64,10 @@ services:
 
   # --- DASHDOT (Telemetría de Almacenamiento, RAM y CPU para Homarr) ---
   dashdot:
-    image: maik95/dashdot:latest
+    image: mauricenino/dashdot:latest
     container_name: dashdot
     restart: always
+    privileged: true
     ports:
       - '3001:3001'
     volumes:
