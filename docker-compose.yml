@@ -8,7 +8,7 @@ volumes:
 services:
   # --- WATCHTOWER (Actualizaciones Automáticas de Contenedores) ---
   watchtower:
-    image: containrrr/watchtower:latest
+    image: containrrr/watchtower:v1.4.0  # <--- CAMBIADO A VERSIÓN DE COMPATIBILIDAD
     container_name: watchtower
     restart: always
     volumes:
@@ -17,7 +17,6 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_SCHEDULE=0 0 4 1 * *
       - TZ=Europe/Madrid
-
   # --- PORTAINER (Gestión de Contenedores) ---
   portainer:
     image: portainer/portainer-ce:latest
