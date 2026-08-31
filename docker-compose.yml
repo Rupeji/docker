@@ -15,7 +15,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_POLL_INTERVAL=2592000
+      - WATCHTOWER_SCHEDULE=0 0 4 1 * *
       - TZ=Europe/Madrid
 
   # --- PORTAINER (Gestión de Contenedores) ---
