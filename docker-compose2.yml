@@ -1,0 +1,124 @@
+networks:
+  default:
+    name: homeserver_network
+
+volumes:
+  immich_db:
+
+services:
+  # --- WATCHTOWER ---
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 1 * *
+      - TZ=Europe/Madrid
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
+
+  # --- PORTAINER ---
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
+    ports:
+      - "192.168.50.100:9443:9443"
+      - "192.168.50.100:9000:9000"
+
+  # --- PI-HOLE ---
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: always
+    ports:
+      - "192.168.50.100:53:53/tcp"
+      - "192.168.50.100:53:53/udp"
+      - "192.168.50.100:8080:80/tcp"
+    environment:
+      - TZ=Europe/Madrid
+      - WEBPASSWORD=TuContraseñaSeguraParaPihole
+    volumes:
+      - ./data/pihole:/etc/pihole
+      - ./data/dnsmasq.d:/etc/dnsmasq.d
+
+  # --- HOMARR ---
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
+    restart: always
+    ports:
+      - '192.168.50.100:7575:7575'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/homarr/appdata:/appdata
+    environment:
+      - TZ=Europe/Madrid
+      - SECRET_ENCRYPTION_KEY=9a4f7e2b1c8d3f6a5e0b2c4d6f8a0e1b3c5d7e9f2a4b6c8d0e1f3a5b7c9d1e2f
+
+  # --- DASHDOT ---
+  dashdot:
+    image: mauricenino/dashdot:latest
+    container_name: dashdot
+    restart: always
+    privileged: true
+    ports:
+      - '192.168.50.100:3001:3001'
+    volumes:
+      - /:/mnt/host:ro
+
+  # --- IMMICH: SERVIDOR DE FOTOS ---
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    container_name: immich_server
+    volumes:
+      - ./data/immich/photos:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_DATA_LOCATION=immich_db
+      - DB_DATABASE_NAME=immich
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=immich_secure_pass
+      - DB_HOSTNAME=immich-database
+      - REDIS_HOSTNAME=immich-redis
+      - IMMICH_MACHINE_LEARNING_URL=http://immich-machine-learning:3003
+    ports:
+      - "192.168.50.100:2283:2283"
+    depends_on:
+      - immich-database
+      - immich-redis
+    restart: always
+
+  # --- IMMICH: INTELIGENCIA ARTIFICIAL ---
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    container_name: immich_machine_learning
+    volumes:
+      - ./data/immich/cache:/cache
+    restart: always
+
+  # --- IMMICH: BASE DE DATOS OFICIAL ---
+  immich-database:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+    container_name: immich_database
+    environment:
+      - POSTGRES_DB=immich
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=immich_secure_pass
+    volumes:
+      - immich_db:/var/lib/postgresql/data
+    restart: always
+
+  # --- IMMICH: REDIS ---
+  immich-redis:
+    image: redis:7-alpine
+    container_name: immich_redis
+    restart: always
