@@ -125,30 +125,36 @@ services:
     container_name: immich_redis
     restart: always
 
-  # --- NETBIRD: TU VPN OPEN-SOURCE SIN PUERTOS ---
+    # --- NETBIRD: TU VPN OPEN-SOURCE SIN PUERTOS ---
   netbird:
-    image: netbirdio/client:latest
+    image: netbirdio/netbird:latest
     container_name: netbird
     restart: always
     cap_add:
-      - NET_ADMIN # Permiso obligatorio para crear el túnel tun/tap interno
+      - NET_ADMIN
+      - SYS_ADMIN     # Permiso extra necesario para Arch Linux
+      - SYS_RESOURCE  # Permiso extra necesario para el Kernel
+    devices:
+      - /dev/net/tun:/dev/net/tun # Conexión directa al túnel de red de tu placa base
     volumes:
-      - ./data/netbird:/etc/netbird
+      - ./data/netbird:/var/lib/netbird # Ruta oficial corregida para persistencia de datos
     environment:
       - NB_LOG_LEVEL=info
+      # TU VARIABLE DE AUTOCONEXIÓN (Pega aquí tu clave)
+      - NB_SETUP_KEY=95E4BBDA-70CA-48E7-8250-7E896B09F1D9
 
   # --- KASM-FIREFOX: NAVEGADOR BLINDADO CON COMPLEMENTOS ---
   kasm-firefox:
-    image: kasmweb/firefox:1.16.0 # Imagen oficial de Firefox optimizada por Kasm
+    # IMAGEN CORREGIDA CON VERSIÓN ESTABLE ROLLING
+    image: kasmweb/firefox:1.19.0-rolling-weekly
     container_name: kasm_firefox
     restart: always
     ports:
-      # Lo atamos a tu IP local física para acceder desde casa de forma segura
       - "192.168.50.100:6901:6901"
     environment:
-      - VNC_PW=Pacopicopoco.7 # <--- Cambia esto por la clave que quieras usar al entrar
+      # Recuerda que el usuario por defecto de Kasm es: kasm_user
+      - VNC_PW=TuContraseñaParaElNavegador 
       - TZ=Europe/Madrid
     volumes:
-      - /dev/shm:/dev/shm # Aceleración de memoria compartida para vídeo fluido
-      # Volumen persistente para guardar tus plugins, marcadores y configuración de Firefox
+      - /dev/shm:/dev/shm
       - ./data/kasm_firefox_profile:/home/kasm-default-profile/.mozilla
