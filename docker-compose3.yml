@@ -150,7 +150,7 @@ services:
     container_name: kasm_firefox
     restart: always
     ports:
-      - "192.168.50.100:6901:6901"
+      - "6901:6901"
     environment:
       # Recuerda que el usuario por defecto de Kasm es: kasm_user
       - VNC_PW=PAcopicopoco.7
