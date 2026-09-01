@@ -75,19 +75,6 @@ services:
     volumes:
       - /:/mnt/host:ro
 
-  # --- NGINX PROXY MANAGER (Proxy Inverso y SSL) ---
-  nginx-proxy-manager:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: nginx-proxy-manager
-    restart: always
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./data/nginx/data:/data
-      - ./data/nginx/letsencrypt:/etc/letsencrypt
-
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
     image: ghcr.io/immich-app/immich-server:release
