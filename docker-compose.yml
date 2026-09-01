@@ -17,6 +17,8 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_SCHEDULE=0 0 4 1 * *
       - TZ=Europe/Madrid
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
 
   # --- PORTAINER (Gestión de Contenedores) ---
   portainer:
