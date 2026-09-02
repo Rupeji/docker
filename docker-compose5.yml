@@ -1,0 +1,4 @@
+volumes:
+  immich_db:
+  caddy_data:
+  caddy_config:
