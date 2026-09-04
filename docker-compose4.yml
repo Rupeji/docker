@@ -6,7 +6,7 @@ volumes:
   immich_db:
 
 services:
-  # --- WATCHTOWER (Actualizaciones Automáticas) ---
+  # --- WATCHTOWER ---
   watchtower:
     image: nickfedor/watchtower:latest
     container_name: watchtower
@@ -20,7 +20,7 @@ services:
       - WATCHTOWER_NOTIFICATIONS=shoutrrr
       - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
 
-  # --- PORTAINER (Gestión de Contenedores) ---
+  # --- PORTAINER ---
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -34,13 +34,11 @@ services:
       - "192.168.50.100:9443:9443"
       - "192.168.50.100:9000:9000"
 
-  # --- PI-HOLE (Bloqueador de Publicidad y DNS) ---
+  # --- PI-HOLE ---
   pihole:
     image: pihole/pihole:latest
     container_name: pihole
     restart: always
-    dns:
-      - 9.9.9.9 # DNS propio de emergencia para salir a internet a actualizar listas
     ports:
       - "192.168.50.100:53:53/tcp"
       - "192.168.50.100:53:53/udp"
@@ -52,7 +50,7 @@ services:
       - ./data/pihole:/etc/pihole
       - ./data/dnsmasq.d:/etc/dnsmasq.d
 
-  # --- HOMARR (Panel de Control Principal) ---
+  # --- HOMARR ---
   homarr:
     image: ghcr.io/homarr-labs/homarr:latest
     container_name: homarr
@@ -66,7 +64,7 @@ services:
       - TZ=Europe/Madrid
       - SECRET_ENCRYPTION_KEY=9a4f7e2b1c8d3f6a5e0b2c4d6f8a0e1b3c5d7e9f2a4b6c8d0e1f3a5b7c9d1e2f
 
-  # --- DASHDOT (Telemetría para Homarr) ---
+  # --- DASHDOT ---
   dashdot:
     image: mauricenino/dashdot:latest
     container_name: dashdot
@@ -76,6 +74,19 @@ services:
       - '192.168.50.100:3001:3001'
     volumes:
       - /:/mnt/host:ro
+
+  # --- HOMEPAGE ---
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: always
+    ports:
+      - "192.168.50.100:3000:3000"
+    volumes:
+      - ./data/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=Europe/Madrid
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
@@ -119,42 +130,8 @@ services:
       - immich_db:/var/lib/postgresql/data
     restart: always
 
-  # --- IMMICH: REDIS (Cola de tareas) ---
+  # --- IMMICH: REDIS ---
   immich-redis:
     image: redis:7-alpine
     container_name: immich_redis
     restart: always
-
-    # --- NETBIRD: TU VPN OPEN-SOURCE SIN PUERTOS ---
-  netbird:
-    image: netbirdio/netbird:latest
-    container_name: netbird
-    restart: always
-    cap_add:
-      - NET_ADMIN
-      - SYS_ADMIN     # Permiso extra necesario para Arch Linux
-      - SYS_RESOURCE  # Permiso extra necesario para el Kernel
-    devices:
-      - /dev/net/tun:/dev/net/tun # Conexión directa al túnel de red de tu placa base
-    volumes:
-      - ./data/netbird:/var/lib/netbird # Ruta oficial corregida para persistencia de datos
-    environment:
-      - NB_LOG_LEVEL=info
-      # TU VARIABLE DE AUTOCONEXIÓN (Pega aquí tu clave)
-      - NB_SETUP_KEY=95E4BBDA-70CA-48E7-8250-7E896B09F1D9
-
-  # --- KASM-FIREFOX: NAVEGADOR BLINDADO CON COMPLEMENTOS ---
-  kasm-firefox:
-    # IMAGEN CORREGIDA CON VERSIÓN ESTABLE ROLLING
-    image: kasmweb/firefox:1.19.0-rolling-weekly
-    container_name: kasm_firefox
-    restart: always
-    ports:
-      - "6901:6901"
-    environment:
-      # Recuerda que el usuario por defecto de Kasm es: kasm_user
-      - VNC_PW=PAcopicopoco.7
-      - TZ=Europe/Madrid
-    volumes:
-      - /dev/shm:/dev/shm
-      - ./data/kasm_firefox_profile:/home/kasm-default-profile/.mozilla
