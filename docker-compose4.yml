@@ -85,8 +85,11 @@ services:
     volumes:
       - ./data/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      #  Mapea toda la raíz del host de la misma forma
+      - /:/mnt/host:ro
     environment:
       - TZ=Europe/Madrid
+      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.100,192.168.50.100:3000
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
