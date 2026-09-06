@@ -27,6 +27,7 @@ services:
       - "192.168.50.100:9696:9696"  # Prowlarr
       - "192.168.50.100:7878:7878"  # Radarr
       - "192.168.50.100:8989:8989"  # Sonarr
+      - "192.168.50.100:5656:5656"  # Kapowarr (Añadido)
 
   # --- INDEXADOR DE TRACKERS (Bajo VPN) ---
   prowlarr:
@@ -75,6 +76,22 @@ services:
     depends_on:
       - vpn
 
+  # --- GESTOR DE CÓMICS (Bajo VPN) ---
+  kapowarr:
+    image: mrcas/kapowarr:latest
+    container_name: kapowarr
+    restart: always
+    network_mode: "service:vpn"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ./config/kapowarr:/config
+      - /home/data:/data # Acceso a descargas y biblioteca de cómics
+    depends_on:
+      - vpn
+
   # --- GESTOR DE DESCARGAS (Fuera de la VPN - Fibra directa) ---
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -92,6 +109,24 @@ services:
     volumes:
       - ./config/qbittorrent:/config
       - /home/data:/data
+
+  # --- EXTRACCIÓN AUTOMÁTICA DE RAR/ZIP (Fuera de la VPN) ---
+  unpackerr:
+    image: golift/unpackerr:latest
+    container_name: unpackerr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      # Integración con Radarr/Sonarr (puedes dejarlas en blanco y configurarlo luego)
+      - UN_SONARR_0_URL=http://192.168.50.100:8989
+      - UN_SONARR_0_API_KEY=TU_API_KEY_DE_SONARR
+      - UN_RADARR_0_URL=http://192.168.50.100:7878
+      - UN_RADARR_0_API_KEY=TU_API_KEY_DE_RADARR
+    volumes:
+      - ./config/unpackerr:/config
+      - /home/data:/data # Es vital que tenga acceso exacto a las carpetas que lee qBittorrent
 
   # --- SERVIDOR MULTIMEDIA (Fuera de la VPN) ---
   jellyfin:
