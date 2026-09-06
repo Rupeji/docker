@@ -17,16 +17,14 @@ services:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=CMoLP4CKoBMSjmUx1cEBZsBbNg4Pc14xL/QXdpQ0/XE=
-      - WIREGUARD_PUBLIC_KEY=IzfEE9h6+HPn7K1fSmLw8txcAQMvyGFvy1tFmd9YAz4=
-      - WIREGUARD_ADDRESSES=10.2.0.2/32
-      - WIREGUARD_ENDPOINT_IP=169.150.196.100
-      - WIREGUARD_ENDPOINT_PORT=51820
+      - SERVER_COUNTRIES=Netherlands
       - TZ=Europe/Madrid
     ports:
       - "192.168.50.100:9696:9696"  # Prowlarr
       - "192.168.50.100:7878:7878"  # Radarr
       - "192.168.50.100:8989:8989"  # Sonarr
       - "192.168.50.100:5656:5656"  # Kapowarr
+
 
   # --- INDEXADOR DE TRACKERS (Bajo VPN) ---
   prowlarr:
