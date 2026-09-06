@@ -28,13 +28,6 @@ services:
       - "192.168.50.100:8989:8989"  # Sonarr
       - "192.168.50.100:5656:5656"  # Kapowarr
 
-    ports:
-      # Los puertos de los servicios bajo la VPN se mapean AQUÍ:
-      - "192.168.50.100:9696:9696"  # Prowlarr
-      - "192.168.50.100:7878:7878"  # Radarr
-      - "192.168.50.100:8989:8989"  # Sonarr
-      - "192.168.50.100:5656:5656"  # Kapowarr (Añadido)
-
   # --- INDEXADOR DE TRACKERS (Bajo VPN) ---
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:develop
