@@ -1,0 +1,109 @@
+version: '3.8'
+
+networks:
+  default:
+    external: true
+    name: homeserver_network
+
+services:
+  # --- CONTENEDOR VPN (ProtonVPN vía Gluetun) ---
+  vpn:
+    image: qmcgaw/gluetun:latest
+    container_name: protonvpn_tunnel
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=YeMEH5pM3TALqxSY
+      - OPENVPN_PASSWORD=qyTMrczI6tQKSnLgNc90Y8BIk6jheFjS
+      - SERVER_COUNTRIES=Iceland,Switzerland,Netherlands,Romania
+      - TZ=Europe/Madrid
+    ports:
+      # Los puertos de los servicios bajo la VPN se mapean AQUÍ:
+      - "192.168.50.100:9696:9696"  # Prowlarr
+      - "192.168.50.100:7878:7878"  # Radarr
+      - "192.168.50.100:8989:8989"  # Sonarr
+
+  # --- INDEXADOR DE TRACKERS (Bajo VPN) ---
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    restart: always
+    network_mode: "service:vpn"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ./config/prowlarr:/config
+    depends_on:
+      - vpn
+
+  # --- GESTOR DE PELÍCULAS (Bajo VPN) ---
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: always
+    network_mode: "service:vpn"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ./config/radarr:/config
+      - /home/data:/data
+    depends_on:
+      - vpn
+
+  # --- GESTOR DE SERIES (Bajo VPN) ---
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: always
+    network_mode: "service:vpn"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ./config/sonarr:/config
+      - /home/data:/data
+    depends_on:
+      - vpn
+
+  # --- GESTOR DE DESCARGAS (Fuera de la VPN - Fibra directa) ---
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+    ports:
+      - "192.168.50.100:8089:8080" # Acceso Web UI
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - ./config/qbittorrent:/config
+      - /home/data:/data
+
+  # --- SERVIDOR MULTIMEDIA (Fuera de la VPN) ---
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8096:8096"
+    volumes:
+      - ./config/jellyfin:/config
+      - /home/data/media:/data/media:ro
