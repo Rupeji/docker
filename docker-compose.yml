@@ -88,6 +88,24 @@ services:
       - /:/mnt/host:ro
       - /etc/os-release:/etc/os-release:ro
 
+  # --- GESTOR DE DESCARGAS (Unificado en el Stack Principal) ---
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+    ports:
+      - "192.168.50.100:8089:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - /home/inhumano/docker-arr/config/qbittorrent:/config  # <-- CLAVE: Apunta a tu config vieja para mantener los datos
+      - /home/data:/data
+
   # --- FILEBROWSER ---
   filebrowser:
     image: filebrowser/filebrowser:latest
@@ -105,6 +123,27 @@ services:
       - ./data/filebrowser/database.db:/database.db
     environment:
       - TZ=Europe/Madrid
+
+  # --- SERVIDOR MULTIMEDIA (Jellyfin con Aceleración QSV Unificado) ---
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    group_add:
+      - "987"                        # Mantiene el GID de la GPU de tu N100
+    devices:
+      - /dev/dri:/dev/dri            # Pasa la gráfica física de Intel
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8096:8096"
+    volumes:
+      - /home/inhumano/docker-arr/config/jellyfin:/config  # <-- CLAVE: Apunta a tu configuración vieja
+      - /home/data/media/movies:/data/movies:ro
+      - /home/data/media/tvshows:/data/tvshows:ro
+      - /home/data/torrents/completados:/data/torrents/completados:ro
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
