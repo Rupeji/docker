@@ -142,9 +142,6 @@ services:
     volumes:
       - /home/inhumano/docker-arr/config/jellyfin:/config  # <-- CLAVE: Apunta a tu configuración vieja
       - /home/data:/data:ro
-#      - /home/data/media/tvshows:/data/tvshows:ro
-#      - /home/data/torrents/completados:/data/torrents/completados:ro
- 
 
   # --- JELLYSEERR (Descubrimiento y Peticiones) ---
   jellyseerr:
