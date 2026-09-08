@@ -141,9 +141,55 @@ services:
       - "192.168.50.100:8096:8096"
     volumes:
       - /home/inhumano/docker-arr/config/jellyfin:/config  # <-- CLAVE: Apunta a tu configuración vieja
-      - /home/data/media/movies:/data/movies:ro
-      - /home/data/media/tvshows:/data/tvshows:ro
-      - /home/data/torrents/completados:/data/torrents/completados:ro
+      - /home/data:/data:ro
+#      - /home/data/media/tvshows:/data/tvshows:ro
+#      - /home/data/torrents/completados:/data/torrents/completados:ro
+ 
+
+  # --- JELLYSEERR (Descubrimiento y Peticiones) ---
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: always
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:5055:5055"
+    volumes:
+      - ./data/jellyseerr:/app/config
+
+
+  # --- SONARR (Gestor de Series) ---
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8989:8989"
+    volumes:
+      - ./data/sonarr:/config
+      - /home/data:/data # <-- Ruta unificada con tu qBittorrent
+
+  # --- RADARR (Gestor de Películas) ---
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:7878:7878"
+    volumes:
+      - ./data/radarr:/config
+      - /home/data:/data # <-- Ruta unificada con tu qBittorrent
+
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
