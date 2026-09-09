@@ -34,46 +34,217 @@ services:
       - "192.168.50.100:9443:9443"
       - "192.168.50.100:9000:9000"
 
+  # --- NINE LANCACHE UI: API TRASERA ---
+  nine-lancache-api:
+    image: ninepiece2/nine-lancache-ui:api-beta   # <--- CORREGIDO (Desde Docker Hub)
+    container_name: nine-lancache-api
+    restart: always
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./data/lancache/logs:/logs:ro
+
+  # --- NINE LANCACHE UI: INTERFAZ WEB ---
+  nine-lancache-ui:
+    image: ninepiece2/nine-lancache-ui:ui-beta    # <--- CORREGIDO (Desde Docker Hub)
+    container_name: nine-lancache-ui
+    restart: always
+    ports:
+      - "${LANCACHE_IP}:9090:80"
+    environment:
+      - TZ=${TZ}
+      - BACKEND_URL=http://nine-lancache-api
+      - BACKEND_PORT=5150
+    depends_on:
+      - nine-lancache-api
+
+
+  # --- LANCACHE: CACHE DE JUEGOS ---
+  lancache:
+    image: lancachenet/monolithic:latest
+    container_name: lancache
+    restart: always
+    ports:
+      - "${LANCACHE_IP}:80:80/tcp"
+      - "${LANCACHE_IP}:443:443/tcp"
+    environment:
+      - TZ=${TZ}
+      - CACHE_DISK_SIZE=${CACHE_DISK_SIZE}
+    volumes:
+      - ./data/lancache/cache:/data/cache
+      - ./data/lancache/logs:/data/logs
+
+  # --- LANCACHE: SNIPROXY ---
+  lancache-sniproxy:
+    image: lancachenet/sniproxy:latest
+    container_name: lancache-sniproxy
+    restart: always
+    ports:
+      - "${LANCACHE_IP}:443:443/tcp"
+    environment:
+      - TZ=${TZ}
+    depends_on:
+      - lancache
+
   # --- PI-HOLE ---
   pihole:
     image: pihole/pihole:latest
     container_name: pihole
     restart: always
     ports:
-      - "192.168.50.100:53:53/tcp"
-      - "192.168.50.100:53:53/udp"
-      - "192.168.50.100:8080:80/tcp"
+      - "${LANCACHE_IP}:53:53/tcp"    # <--- Vuelve a su puerto 53 original de tu red
+      - "${LANCACHE_IP}:53:53/udp"
+      - "${LANCACHE_IP}:8080:80/tcp"
     environment:
-      - TZ=Europe/Madrid
-      - WEBPASSWORD=TuContraseñaSeguraParaPihole
+      - REMS_ALLOWED_HOSTS=${LANCACHE_IP},${LANCACHE_IP}:8080,localhost
+      - TZ=${TZ}
+      - WEBPASSWORD=${PIHOLE_PASSWORD}
+      - PIHOLE_DNS_=1.1.1.1;8.8.8.8
     volumes:
       - ./data/pihole:/etc/pihole
       - ./data/dnsmasq.d:/etc/dnsmasq.d
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
-  # --- HOMARR ---
-  homarr:
-    image: ghcr.io/homarr-labs/homarr:latest
-    container_name: homarr
+
+  # --- HOMEPAGE ---
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
     restart: always
     ports:
-      - '192.168.50.100:7575:7575'
+      - "192.168.50.100:3000:3000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data/homarr/appdata:/appdata
+      - ./data/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      #  Mapea toda la raíz del host de la misma forma
+      - /:/mnt/host:ro
     environment:
       - TZ=Europe/Madrid
-      - SECRET_ENCRYPTION_KEY=9a4f7e2b1c8d3f6a5e0b2c4d6f8a0e1b3c5d7e9f2a4b6c8d0e1f3a5b7c9d1e2f
+      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.100,192.168.50.100:3000
 
-  # --- DASHDOT ---
-  dashdot:
-    image: mauricenino/dashdot:latest
-    container_name: dashdot
+# --- GLANCES ---
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
     restart: always
+    pid: host
     privileged: true
-    ports:
-      - '192.168.50.100:3001:3001'
+    networks:
+      - default # <-- ESTO ES CLAVE para que Homepage lo vea internamente
+    environment:
+      - GLANCES_OPT=-w
+      - TZ=Europe/Madrid
+      - LANG=es_ES.UTF-8
+      - GLANCES_HOST_MOUNT=/mnt/host
+      - PREFIX_PROCFS=/mnt/host
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /:/mnt/host:ro
+      - /etc/os-release:/etc/os-release:ro
+
+  # --- GESTOR DE DESCARGAS (Unificado en el Stack Principal) ---
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+    ports:
+      - "192.168.50.100:8089:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - /home/inhumano/docker-arr/config/qbittorrent:/config  # <-- CLAVE: Apunta a tu config vieja para mantener los datos
+      - /home/data:/data
+
+  # --- FILEBROWSER ---
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default
+    ports:
+      - "192.168.50.100:8082:80" # Cambia el puerto si el 8082 ya está ocupado
+    volumes:
+      - /home:/srv # Acceso directo a tu partición de 1TB del servidor
+      - ./data/filebrowser/config.json:/etc/filebrowser.json
+      - ./data/filebrowser/database.db:/database.db
+    environment:
+      - TZ=Europe/Madrid
+
+  # --- SERVIDOR MULTIMEDIA (Jellyfin con Aceleración QSV Unificado) ---
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    group_add:
+      - "987"                        # Mantiene el GID de la GPU de tu N100
+    devices:
+      - /dev/dri:/dev/dri            # Pasa la gráfica física de Intel
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8096:8096"
+    volumes:
+      - /home/inhumano/docker-arr/config/jellyfin:/config  # <-- CLAVE: Apunta a tu configuración vieja
+      - /home/data:/data:ro
+#      - /home/data/media/tvshows:/data/tvshows:ro
+#      - /home/data/torrents/completados:/data/torrents/completados:ro
+ 
+
+  # --- JELLYSEERR (Descubrimiento y Peticiones) ---
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: always
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:5055:5055"
+    volumes:
+      - ./data/jellyseerr:/app/config
+
+
+  # --- SONARR (Gestor de Series) ---
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8989:8989"
+    volumes:
+      - ./data/sonarr:/config
+      - /home/data:/data # <-- Ruta unificada con tu qBittorrent
+
+  # --- RADARR (Gestor de Películas) ---
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:7878:7878"
+    volumes:
+      - ./data/radarr:/config
+      - /home/data:/data # <-- Ruta unificada con tu qBittorrent
+
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
