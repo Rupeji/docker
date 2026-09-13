@@ -1,0 +1,309 @@
+networks:
+  default:
+    name: homeserver_network
+
+volumes:
+  immich_db:
+
+services:
+  # --- WATCHTOWER ---
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 1 * *
+      - TZ=Europe/Madrid
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
+
+  # --- PORTAINER ---
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
+    ports:
+      - "192.168.50.100:9443:9443"
+      - "192.168.50.100:9000:9000"
+
+  # --- LANCACHE DASHBOARD: ESTADÍSTICAS E INTERFAZ ---
+  lancache-dashboard:
+    container_name: lancache-dashboard
+    restart: always
+    build: ./data/lancache-dashboard-src
+    ports:
+      - "192.168.50.100:9090:3000"
+    environment:
+      - TZ=Europe/Madrid
+      - LOG_PATH=/logs/access.log              # Ruta interna recomendada por el autor
+      - DB_PATH=/app/data/lancache.db         # Ruta interna de la base de datos SQLite
+    volumes:
+      - ./data/lancache/logs:/logs:ro
+      - ./data/lancache-dashboard-data:/app/data # <--- PERSISTENCIA TOTAL CORREGIDA
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    depends_on:
+      - lancache
+
+
+  # --- LANCACHE: CACHE DE JUEGOS ---
+  lancache:
+    image: lancachenet/monolithic:latest
+    container_name: lancache
+    restart: always
+    networks:
+      - default
+    ports:
+      - "${LANCACHE_IP}:80:80/tcp"
+#      - "${LANCACHE_IP}:443:443/tcp"
+    environment:
+      - TZ=${TZ}
+      - CACHE_DISK_SIZE=${CACHE_DISK_SIZE}
+    volumes:
+      - ./data/lancache/cache:/data/cache
+      - ./data/lancache/logs:/data/logs
+
+  # --- LANCACHE: SNIPROXY ---
+  lancache-sniproxy:
+    image: lancachenet/sniproxy:latest
+    container_name: lancache-sniproxy
+    restart: always
+    networks:
+      - default
+    ports:
+      - "${LANCACHE_IP}:443:443/tcp"
+    environment:
+      - TZ=${TZ}
+    depends_on:
+      - lancache
+
+  # --- PI-HOLE ---
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: always
+    networks:
+      - default
+    ports:
+      - "${LANCACHE_IP}:53:53/tcp"
+      - "${LANCACHE_IP}:53:53/udp"
+      - "${LANCACHE_IP}:8080:80/tcp"
+    environment:
+      - REMS_ALLOWED_HOSTS=${LANCACHE_IP},${LANCACHE_IP}:8080,localhost
+      - TZ=${TZ}
+      - WEBPASSWORD=${PIHOLE_PASSWORD}
+      - PIHOLE_DNS_=1.1.1.1;8.8.8.8
+    volumes:
+      - ./data/pihole:/etc/pihole
+      - ./data/dnsmasq.d:/etc/dnsmasq.d
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # --- HOMEPAGE ---
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: always
+    networks:
+      - default
+    ports:
+      - "192.168.50.100:3000:3000"
+    volumes:
+      - ./data/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/mnt/host:ro
+    environment:
+      - TZ=Europe/Madrid
+      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.100,192.168.50.100:3000
+
+  # --- GLANCES ---
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
+    restart: always
+    pid: host
+    privileged: true
+    networks:
+      - default
+    environment:
+      - GLANCES_OPT=-w
+      - TZ=Europe/Madrid
+      - LANG=es_ES.UTF-8
+      - GLANCES_HOST_MOUNT=/mnt/host
+      - PREFIX_PROCFS=/mnt/host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/mnt/host:ro
+      - /etc/os-release:/etc/os-release:ro
+
+  # --- GESTOR DE DESCARGAS ---
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: always
+    networks:
+      - default
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+    ports:
+      - "192.168.50.100:8089:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    volumes:
+      - /home/inhumano/docker-arr/config/qbittorrent:/config
+      - /home/data:/data
+
+  # --- FILEBROWSER ---
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default
+    ports:
+      - "192.168.50.100:8082:80"
+    volumes:
+      - /home:/srv
+      - ./data/filebrowser/config.json:/etc/filebrowser.json
+      - ./data/filebrowser/database.db:/database.db
+    environment:
+      - TZ=Europe/Madrid
+
+  # --- SERVIDOR MULTIMEDIA ---
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    networks:
+      - default
+    group_add:
+      - "987"
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8096:8096"
+    volumes:
+      - /home/inhumano/docker-arr/config/jellyfin:/config
+      - /home/data:/data:ro
+
+  # --- JELLYSEERR ---
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: always
+    networks:
+      - default
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:5055:5055"
+    volumes:
+      - ./data/jellyseerr:/app/config
+
+  # --- SONARR ---
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: always
+    networks:
+      - default
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8989:8989"
+    volumes:
+      - ./data/sonarr:/config
+      - /home/data:/data
+
+  # --- RADARR ---
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: always
+    networks:
+      - default
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:7878:7878"
+    volumes:
+      - ./data/radarr:/config
+      - /home/data:/data
+
+  # --- IMMICH: SERVIDOR DE FOTOS ---
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    container_name: immich_server
+    networks:
+      - default
+    volumes:
+      - ./data/immich/photos:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_DATA_LOCATION=immich_db
+      - DB_DATABASE_NAME=immich
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=immich_secure_pass
+      - DB_HOSTNAME=immich-database
+      - REDIS_HOSTNAME=immich-redis
+      - IMMICH_MACHINE_LEARNING_URL=http://immich-machine-learning:3003
+    ports:
+      - "192.168.50.100:2283:2283"
+    depends_on:
+      - immich-database
+      - immich-redis
+    restart: always
+
+  # --- IMMICH: INTELIGENCIA ARTIFICIAL ---
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    container_name: immich_machine_learning
+    networks:
+      - default
+    volumes:
+      - ./data/immich/cache:/cache
+    restart: always
+
+  # --- IMMICH: BASE DE DATOS OFICIAL ---
+  immich-database:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+    container_name: immich_database
+    networks:
+      - default
+    environment:
+      - POSTGRES_DB=immich
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=immich_secure_pass
+    volumes:
+      - immich_db:/var/lib/postgresql/data
+    restart: always
+
+  # --- IMMICH: REDIS ---
+  immich-redis:
+    image: redis:7-alpine
+    container_name: immich_redis
+    networks:
+      - default
+    restart: always
