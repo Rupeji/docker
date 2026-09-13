@@ -1,6 +1,6 @@
 services:
   # =========================================================================
-  # 1. DNS MAESTRO DE LA CASA: ADGUARD HOME (IP Principal .100)
+  # 1. DNS MAESTRO DE LA CASA: ADGUARD HOME (IP Principal .150)
   # =========================================================================
   adguardhome:
     image: adguard/adguardhome:latest
@@ -23,7 +23,7 @@ services:
       start_period: 10s
 
   # =========================================================================
-  # 2. CACHÉ DE VIDEOJUEGOS: LANCACHE MONOLITHIC (IP Secundaria .101)
+  # 2. CACHÉ DE VIDEOJUEGOS: LANCACHE MONOLITHIC (IP Secundaria .151)
   # =========================================================================
   lancache:
     image: lancachenet/monolithic:latest
@@ -58,7 +58,43 @@ services:
         condition: service_healthy
 
   # =========================================================================
-  # 4. MULTIMEDIA CON TRANSCODIFICACIÓN POR HARDWARE: JELLYFIN
+  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD (Puerto 8081 de la IP .150)
+  # =========================================================================
+  lancache-dashboard:
+    image: imahmud1/lancache-dashboard:latest
+    container_name: lancache-dashboard
+    restart: always
+    ports:
+      - "${IP_PRINCIPAL}:${PUERTO_DASHBOARD}:80/tcp"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      # Lee en caliente los mismos logs que escupe LanCache en tu SSD de 4TB
+      - ${RUTA_SSD_4TB}/lancache/logs:/var/log/nginx
+    depends_on:
+      - lancache
+
+  # =========================================================================
+  # 5. CONTROLADOR ACTIVO: LANCACHE MANAGER (Puerto 8082 de la IP .150)
+  # =========================================================================
+  lancache-manager:
+    image: ghcr.io/regix1/lancache-manager:latest
+    container_name: lancache-manager
+    restart: always
+    ports:
+      - "${IP_PRINCIPAL}:${PUERTO_MANAGER}:80/tcp"
+    environment:
+      - TZ=Europe/Madrid
+      - LANCACHE_IP=${IP_LANCACHE}
+    volumes:
+      - /opt/docker/lancache-manager/data:/app/data
+      # Enlaza los sockets internos de prefill para controlarlos desde la web
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - lancache
+
+  # =========================================================================
+  # 6. MULTIMEDIA CON TRANSCODIFICACIÓN POR HARDWARE: JELLYFIN
   # =========================================================================
   jellyfin:
     image: jellyfin/jellyfin:latest
@@ -67,7 +103,7 @@ services:
     ports:
       - "${IP_PRINCIPAL}:8096:8096/tcp"
     devices:
-      - /dev/dri:/dev/dri # VA-API nativo para la Radeon 780M
+      - /dev/dri:/dev/dri 
     volumes:
       - /opt/docker/jellyfin/config:/config
       - /opt/docker/jellyfin/cache:/cache
