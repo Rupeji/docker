@@ -34,23 +34,25 @@ services:
       - "192.168.50.100:9443:9443"
       - "192.168.50.100:9000:9000"
 
-  # =========================================================================
-  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD (Compilación automática real)
-  # =========================================================================
+  # --- LANCACHE DASHBOARD: ESTADÍSTICAS E INTERFAZ ---
   lancache-dashboard:
     container_name: lancache-dashboard
     restart: always
-    build:
-      context: https://github.com/imahmud1/lancache-dashboard.git#main
+    build: ./data/lancache-dashboard-src
     ports:
-      - "${IP_PRINCIPAL}:${PUERTO_DASHBOARD}:80/tcp"
+      - "192.168.50.100:9090:3000"
     environment:
       - TZ=Europe/Madrid
+      - LOG_PATH=/logs/access.log              # Ruta interna recomendada por el autor
+      - DB_PATH=/app/data/lancache.db         # Ruta interna de la base de datos SQLite
     volumes:
-      - ${RUTA_SSD_4TB}/lancache/logs:/logs:ro
-      - /opt/docker/lancache-dashboard/data:/app/data
+      - ./data/lancache/logs:/logs:ro
+      - ./data/lancache-dashboard-data:/app/data # <--- PERSISTENCIA TOTAL CORREGIDA
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     depends_on:
       - lancache
+
 
   # --- LANCACHE: CACHE DE JUEGOS ---
   lancache:
