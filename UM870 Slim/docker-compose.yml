@@ -58,19 +58,20 @@ services:
         condition: service_healthy
 
   # =========================================================================
-  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD (Puerto 8081 de la IP .150)
+  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD (Compilación automática real)
   # =========================================================================
   lancache-dashboard:
-    image: imahmud1/lancache-dashboard:latest
     container_name: lancache-dashboard
     restart: always
+    build:
+      context: https://github.com/imahmud1/lancache-dashboard.git#main
     ports:
       - "${IP_PRINCIPAL}:${PUERTO_DASHBOARD}:80/tcp"
     environment:
       - TZ=Europe/Madrid
     volumes:
-      # Lee en caliente los mismos logs que escupe LanCache en tu SSD de 4TB
-      - ${RUTA_SSD_4TB}/lancache/logs:/var/log/nginx
+      - ${RUTA_SSD_4TB}/lancache/logs:/logs:ro
+      - /opt/docker/lancache-dashboard/data:/app/data
     depends_on:
       - lancache
 
