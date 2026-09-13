@@ -70,6 +70,7 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
+      # Apunta directamente a la carpeta de logs de tu LanCache en el SSD de 4TB
       - ${RUTA_SSD_4TB}/lancache/logs:/logs:ro
       - /opt/docker/lancache-dashboard/data:/app/data
     depends_on:
