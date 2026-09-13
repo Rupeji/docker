@@ -1,0 +1,74 @@
+services:
+  # =========================================================================
+  # 1. DNS MAESTRO DE LA CASA: ADGUARD HOME (IP Principal .100)
+  # =========================================================================
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: always
+    ports:
+      - "${IP_PRINCIPAL}:53:53/tcp"
+      - "${IP_PRINCIPAL}:53:53/udp"
+      - "${IP_PRINCIPAL}:80:80/tcp"     
+      - "${IP_PRINCIPAL}:443:443/tcp"   
+      - "${IP_PRINCIPAL}:3000:3000/tcp" 
+    volumes:
+      - /opt/docker/adguard/work:/opt/adguardhome/work
+      - /opt/docker/adguard/conf:/opt/adguardhome/conf
+    healthcheck:
+      test: ["CMD", "netstat", "-an", "|", "grep", ":53"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # =========================================================================
+  # 2. CACHÉ DE VIDEOJUEGOS: LANCACHE MONOLITHIC (IP Secundaria .101)
+  # =========================================================================
+  lancache:
+    image: lancachenet/monolithic:latest
+    container_name: lancache
+    restart: always
+    ports:
+      - "${IP_LANCACHE}:80:80/tcp"
+      - "${IP_LANCACHE}:443:443/tcp"
+    environment:
+      - CACHE_MEM_SIZE=${LANCACHE_RAM}
+      - MIN_FREE_DISK=${LANCACHE_DISCO_MINIMO}
+    volumes:
+      - ${RUTA_SSD_4TB}/lancache/cache:/data/cache
+      - ${RUTA_SSD_4TB}/lancache/logs:/data/logs
+
+  # =========================================================================
+  # 3. SINCRONIZADOR POR API: SKARONATOR
+  # =========================================================================
+  lancache-dns-sync:
+    image: ghcr.io/skaronator/lancache-dns-sync:latest
+    container_name: lancache-dns-sync
+    restart: on-failure:5
+    environment:
+      - ADGUARD_API=http://${IP_PRINCIPAL}:80
+      - ADGUARD_USERNAME=${ADGUARD_USER}
+      - ADGUARD_PASSWORD=${ADGUARD_PASS}
+      - LANCACHE_SERVER=${IP_LANCACHE}
+      - SYNC_INTERVAL=24h
+      - SERVICE_NAMES=*
+    depends_on:
+      adguardhome:
+        condition: service_healthy
+
+  # =========================================================================
+  # 4. MULTIMEDIA CON TRANSCODIFICACIÓN POR HARDWARE: JELLYFIN
+  # =========================================================================
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    ports:
+      - "${IP_PRINCIPAL}:8096:8096/tcp"
+    devices:
+      - /dev/dri:/dev/dri # VA-API nativo para la Radeon 780M
+    volumes:
+      - /opt/docker/jellyfin/config:/config
+      - /opt/docker/jellyfin/cache:/cache
+      - ${RUTA_SSD_4TB}/media:/data/media
