@@ -107,7 +107,7 @@ services:
     ports:
       - "${IP_SERVIDOR}:8096:8096/tcp"
     group_add:
-      - "107" # Reemplaza este número por el GID real de tu grupo 'render' (ver paso de preparación)
+      - "987" # Reemplaza este número por el GID real de tu grupo 'render' (ver paso de preparación)
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # Inyección directa y segura del nodo verificado
     volumes:
