@@ -1,0 +1,20 @@
+# Configuración de Red Única
+IP_SERVIDOR=192.168.50.150
+
+# Ajustes de almacenamiento de la instalación por defecto
+# (Dado que no usamos LVM separado, todo cuelga de la raíz de tu disco de 4TB)
+RUTA_RAIZ_SISTEMA=/home/inhumano/server_data
+
+# Remapeo Estratégico de Puertos para evitar colisiones
+PUERTO_ADGUARD_WEB=8080
+PUERTO_ADGUARD_ADMIN=3000
+PUERTO_DASHBOARD=3001
+PUERTO_MANAGER=8082
+
+# Credenciales AdGuard (Ajusta con tus datos reales)
+ADGUARD_USER=admin
+ADGUARD_PASS=TuPasswordSeguroAqui
+
+# Parámetros de rendimiento LanCache
+LANCACHE_RAM=4g
+LANCACHE_DISCO_MINIMO=50g
