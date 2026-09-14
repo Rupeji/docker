@@ -1,0 +1,116 @@
+services:
+  # =========================================================================
+  # 1. DNS MAESTRO DE LA CASA: ADGUARD HOME
+  # =========================================================================
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: always
+    ports:
+      - "${IP_SERVIDOR}:53:53/tcp"
+      - "${IP_SERVIDOR}:53:53/udp"
+      - "${IP_SERVIDOR}:${PUERTO_ADGUARD_WEB}:80/tcp"      # Liberamos el puerto 80 para LanCache
+      - "${IP_SERVIDOR}:${PUERTO_ADGUARD_ADMIN}:3000/tcp" # Setup inicial / API
+    volumes:
+      - /opt/docker/adguard/work:/opt/adguardhome/work
+      - /opt/docker/adguard/conf:/opt/adguardhome/conf
+    healthcheck:
+      # Usamos 'ss' en lugar de 'netstat' porque viene por defecto en imágenes modernas alphas/alpinas
+      test: ["CMD-SHELL", "ss -tulpn | grep -q :53"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # =========================================================================
+  # 2. CACHÉ DE VIDEOJUEGOS: LANCACHE MONOLITHIC
+  # =========================================================================
+  lancache:
+    image: lancachenet/monolithic:latest
+    container_name: lancache
+    restart: always
+    ports:
+      - "${IP_SERVIDOR}:80:80/tcp"   # Escucha nativa en la IP del servidor
+      - "${IP_SERVIDOR}:443:443/tcp" # Escucha nativa en la IP del servidor
+    environment:
+      - CACHE_MEM_SIZE=${LANCACHE_RAM}
+      - MIN_FREE_DISK=${LANCACHE_DISCO_MINIMO}
+      - TZ=Europe/Madrid
+    volumes:
+      - ${RUTA_RAIZ_SISTEMA}/lancache/cache:/data/cache
+      - ${RUTA_RAIZ_SISTEMA}/lancache/logs:/data/logs
+
+  # =========================================================================
+  # 3. SINCRONIZADOR POR API: SKARONATOR
+  # =========================================================================
+  lancache-dns-sync:
+    image: ghcr.io/skaronator/lancache-dns-sync:latest
+    container_name: lancache-dns-sync
+    restart: on-failure:5
+    environment:
+      - ADGUARD_API=http://${IP_SERVIDOR}:${PUERTO_ADGUARD_WEB} # Apunta al nuevo puerto web remapeado
+      - ADGUARD_USERNAME=${ADGUARD_USER}
+      - ADGUARD_PASSWORD=${ADGUARD_PASS}
+      - LANCACHE_SERVER=${IP_SERVIDOR} # La IP única del servidor
+      - SYNC_INTERVAL=24h
+      - SERVICE_NAMES=*
+    depends_on:
+      adguardhome:
+        condition: service_healthy
+
+  # =========================================================================
+  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD
+  # =========================================================================
+  lancache-dashboard:
+    container_name: lancache-dashboard
+    restart: always
+    build:
+      context: https://github.com/imahmud1/lancache-dashboard.git#main
+    ports:
+      - "${IP_SERVIDOR}:${PUERTO_DASHBOARD}:3000/tcp" # El puerto interno del contenedor es el 3000
+    environment:
+      - TZ=Europe/Madrid
+      - LOG_PATH=/logs/access.log # Ruta corregida según documentación oficial
+    volumes:
+      # Apunta directamente a la carpeta de logs de tu LanCache en tu partición por defecto
+      - ${RUTA_RAIZ_SISTEMA}/lancache/logs:/logs:ro
+      - /opt/docker/lancache-dashboard/data:/app/data
+    depends_on:
+      - lancache
+
+  # =========================================================================
+  # 5. CONTROLADOR ACTIVO: LANCACHE MANAGER
+  # =========================================================================
+  lancache-manager:
+    image: ghcr.io/regix1/lancache-manager:latest
+    container_name: lancache-manager
+    restart: always
+    ports:
+      - "${IP_SERVIDOR}:${PUERTO_MANAGER}:80/tcp"
+    environment:
+      - TZ=Europe/Madrid
+      - LANCACHE_IP=${IP_SERVIDOR}
+    volumes:
+      - /opt/docker/lancache-manager/data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - lancache
+
+  # =========================================================================
+  # 6. MULTIMEDIA CON TRANSCODIFICACIÓN POR HARDWARE: JELLYFIN
+  # =========================================================================
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "1000:1000" # Fuerza el uso de tu UID:GID para evitar problemas de permisos con renderD128
+    restart: always
+    ports:
+      - "${IP_SERVIDOR}:8096:8096/tcp"
+    group_add:
+      - "107" # Reemplaza este número por el GID real de tu grupo 'render' (ver paso de preparación)
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # Inyección directa y segura del nodo verificado
+    volumes:
+      - /opt/docker/jellyfin/config:/config
+      - /opt/docker/jellyfin/cache:/cache
+      - ${RUTA_RAIZ_SISTEMA}/media:/data/media
