@@ -34,56 +34,6 @@ services:
       - "192.168.50.100:9443:9443"
       - "192.168.50.100:9000:9000"
 
-  # --- LANCACHE DASHBOARD: ESTADÍSTICAS E INTERFAZ ---
-  lancache-dashboard:
-    container_name: lancache-dashboard
-    restart: always
-    build: ./data/lancache-dashboard-src
-    ports:
-      - "192.168.50.100:9090:3000"
-    environment:
-      - TZ=Europe/Madrid
-      - LOG_PATH=/logs/access.log              # Ruta interna recomendada por el autor
-      - DB_PATH=/app/data/lancache.db         # Ruta interna de la base de datos SQLite
-    volumes:
-      - ./data/lancache/logs:/logs:ro
-      - ./data/lancache-dashboard-data:/app/data # <--- PERSISTENCIA TOTAL CORREGIDA
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
-    depends_on:
-      - lancache
-
-
-  # --- LANCACHE: CACHE DE JUEGOS ---
-  lancache:
-    image: lancachenet/monolithic:latest
-    container_name: lancache
-    restart: always
-    networks:
-      - default
-    ports:
-      - "${LANCACHE_IP}:80:80/tcp"
-#      - "${LANCACHE_IP}:443:443/tcp"
-    environment:
-      - TZ=${TZ}
-      - CACHE_DISK_SIZE=${CACHE_DISK_SIZE}
-    volumes:
-      - ./data/lancache/cache:/data/cache
-      - ./data/lancache/logs:/data/logs
-
-  # --- LANCACHE: SNIPROXY ---
-  lancache-sniproxy:
-    image: lancachenet/sniproxy:latest
-    container_name: lancache-sniproxy
-    restart: always
-    networks:
-      - default
-    ports:
-      - "${LANCACHE_IP}:443:443/tcp"
-    environment:
-      - TZ=${TZ}
-    depends_on:
-      - lancache
 
   # --- PI-HOLE ---
   pihole:
@@ -177,10 +127,12 @@ services:
       - "192.168.50.100:8082:80"
     volumes:
       - /home:/srv
-      - ./data/filebrowser/config.json:/etc/filebrowser.json
-      - ./data/filebrowser/database.db:/database.db
+      - /home/inhumano/docker/data/filebrowser/config.json:/etc/filebrowser.json
+      - /home/inhumano/docker/data/filebrowser/database.db:/database.db
     environment:
       - TZ=Europe/Madrid
+      - FILEBROWSER_ADMIN_PASSWORD=Pacopicopoco.7 # <--- Agrega tu contraseña aquí
+
 
   # --- SERVIDOR MULTIMEDIA ---
   jellyfin:
