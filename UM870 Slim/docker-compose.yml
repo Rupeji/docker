@@ -1,112 +1,152 @@
 services:
-  # =========================================================================
-  # 1. DNS MAESTRO DE LA CASA: ADGUARD HOME (IP Principal .150)
-  # =========================================================================
-  adguardhome:
+  # 1. ADGUARD HOME - DNS Centralizador y Bloqueador
+  adguard:
     image: adguard/adguardhome:latest
-    container_name: adguardhome
-    restart: always
-    ports:
-      - "${IP_PRINCIPAL}:53:53/tcp"
-      - "${IP_PRINCIPAL}:53:53/udp"
-      - "${IP_PRINCIPAL}:80:80/tcp"     
-      - "${IP_PRINCIPAL}:443:443/tcp"   
-      - "${IP_PRINCIPAL}:3000:3000/tcp" 
+    container_name: adguard-home
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false" # <- ESTA LÍNEA LO 
+    restart: unless-stopped
+    network_mode: host
     volumes:
-      - /opt/docker/adguard/work:/opt/adguardhome/work
-      - /opt/docker/adguard/conf:/opt/adguardhome/conf
-    healthcheck:
-      test: ["CMD", "netstat", "-an", "|", "grep", ":53"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      - ./adguard-work:/opt/adguardhome/work
+      - ./adguard-data:/opt/adguardhome/conf
 
-  # =========================================================================
-  # 2. CACHÉ DE VIDEOJUEGOS: LANCACHE MONOLITHIC (IP Secundaria .151)
-  # =========================================================================
-  lancache:
+  # 2. LANCACHE MONOLITHIC - Servidor Caché de Juegos
+  monolithic:
     image: lancachenet/monolithic:latest
-    container_name: lancache
-    restart: always
+    container_name: lancache-monolithic
+    restart: unless-stopped
     ports:
-      - "${IP_LANCACHE}:80:80/tcp"
-      - "${IP_LANCACHE}:443:443/tcp"
+      - "80:80/tcp"
+      - "443:443/tcp"
     environment:
-      - CACHE_MEM_SIZE=${LANCACHE_RAM}
-      - MIN_FREE_DISK=${LANCACHE_DISCO_MINIMO}
+      - CACHE_DISK_SIZE=1000g
+      - CACHE_MEM_SIZE=500m
+      - CACHE_MAX_AGE=3560d
+      - UPSTREAM_DNS=1.1.1.1
     volumes:
-      - ${RUTA_SSD_4TB}/lancache/cache:/data/cache
-      - ${RUTA_SSD_4TB}/lancache/logs:/data/logs
+      - ./cache-data:/data/cache
+      - ./cache-logs:/data/logs
 
-  # =========================================================================
-  # 3. SINCRONIZADOR POR API: SKARONATOR
-  # =========================================================================
-  lancache-dns-sync:
+  # 3. SKARONATOR (lancache-dns-sync) - Sincronizador de Dominios
+  skaronator:
     image: ghcr.io/skaronator/lancache-dns-sync:latest
-    container_name: lancache-dns-sync
-    restart: on-failure:5
-    environment:
-      - ADGUARD_API=http://${IP_PRINCIPAL}:80
-      - ADGUARD_USERNAME=${ADGUARD_USER}
-      - ADGUARD_PASSWORD=${ADGUARD_PASS}
-      - LANCACHE_SERVER=${IP_LANCACHE}
-      - SYNC_INTERVAL=24h
-      - SERVICE_NAMES=*
+    container_name: lancache-skaronator
+    restart: unless-stopped
     depends_on:
-      adguardhome:
-        condition: service_healthy
+      - adguard
+    environment:
+      - ADGUARD_API=http://192.168.50.150:3001
+      - ADGUARD_USERNAME=inhumano
+      - ADGUARD_PASSWORD=Pacopicopoco.7  # <-- Asegúrate de poner tu contraseña real
+      - LANCACHE_SERVER=192.168.50.150
+      - SERVICE_NAMES=*
+      - CRON_SCHEDULE=0 4 * * *
 
-  # =========================================================================
-  # 4. MONITORIZACIÓN: LANCACHE DASHBOARD (Compilación automática real)
-  # =========================================================================
-  lancache-dashboard:
+  # 4. LANCACHE MANAGER - Interfaz de control y analíticas
+  manager:
+    image: ghcr.io/regix1/lancache-manager:latest
+    container_name: lancache-manager
+    restart: unless-stopped
+    ports:
+      - "8080:80/tcp"
+    volumes:
+      - ./manager-data:/data
+      - ./cache-logs:/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # 5. LANCACHE DASHBOARD - Compilado directamente desde GitHub con tu sintaxis
+  dashboard:
     container_name: lancache-dashboard
     restart: always
     build:
       context: https://github.com/imahmud1/lancache-dashboard.git#main
     ports:
-      - "${IP_PRINCIPAL}:${PUERTO_DASHBOARD}:80/tcp"
+      - "3010:3000/tcp"                 # Mapea el puerto 3010 externo al 3000 interno de Next.js
     environment:
-      - TZ=Europe/Madrid
+      - LOG_PATH=/logs/access.log       # Ruta del archivo log dentro del contenedor
+      - DB_PATH=/app/data/lancache.db   # Ruta de persistencia de la base de datos
     volumes:
-      # Apunta directamente a la carpeta de logs de tu LanCache en el SSD de 4TB
-      - ${RUTA_SSD_4TB}/lancache/logs:/logs:ro
-      - /opt/docker/lancache-dashboard/data:/app/data
-    depends_on:
-      - lancache
+      - ./cache-logs:/logs:ro           # Pasa la carpeta de logs de Monolithic en modo lectura
+      - ./dashboard-data:/app/data      # Pasa la carpeta de datos persistente
 
-  # =========================================================================
-  # 5. CONTROLADOR ACTIVO: LANCACHE MANAGER (Puerto 8082 de la IP .150)
-  # =========================================================================
-  lancache-manager:
-    image: ghcr.io/regix1/lancache-manager:latest
-    container_name: lancache-manager
+  # 6. WATCHTOWER - Actualizador automático de imágenes Docker
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 1 * *
+      - TZ=Europe/Madrid
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
+
+  # 7. PORTAINER - Interfaz web de gestión para Docker
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "192.168.50.150:9443:9443"
+      - "192.168.50.150:9000:9000"
+    environment:
+      - PORTAINER_NO_SETUP_TOKEN=1 # <--- Añade esta línea aquí
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer-data:/data
+
+
+  # 8. HOMEPAGE - Panel de inicio personalizable (Dashboard de servicios)
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
     restart: always
     ports:
-      - "${IP_PRINCIPAL}:${PUERTO_MANAGER}:80/tcp"
-    environment:
-      - TZ=Europe/Madrid
-      - LANCACHE_IP=${IP_LANCACHE}
+      - "192.168.50.150:3005:3000" # Mapeado a 3005 externo para evitar conflicto con el puerto 3000 del contenedor dashboard
     volumes:
-      - /opt/docker/lancache-manager/data:/app/data
-      # Enlaza los sockets internos de prefill para controlarlos desde la web
+      - ./homepage-config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      - lancache
+      - /:/mnt/host:ro
+    environment:
+      - TZ=Europe/Madrid
+      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.150,192.168.50.150:3005
 
-  # =========================================================================
-  # 6. MULTIMEDIA CON TRANSCODIFICACIÓN POR HARDWARE: JELLYFIN
-  # =========================================================================
-  jellyfin:
-    image: jellyfin/jellyfin:latest
-    container_name: jellyfin
+  # 9. GLANCES - Monitorización avanzada del sistema en tiempo real
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
     restart: always
-    ports:
-      - "${IP_PRINCIPAL}:8096:8096/tcp"
-    devices:
-      - /dev/dri:/dev/dri 
+    pid: host
+    privileged: true
+    environment:
+      - GLANCES_OPT=-w
+      - TZ=Europe/Madrid
+      - LANG=es_ES.UTF-8
+      - GLANCES_HOST_MOUNT=/mnt/host
+      - PREFIX_PROCFS=/mnt/host
     volumes:
-      - /opt/docker/jellyfin/config:/config
-      - /opt/docker/jellyfin/cache:/cache
-      - ${RUTA_SSD_4TB}/media:/data/media
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/mnt/host:ro
+      - /etc/os-release:/etc/os-release:ro
+
+  # 10. FILEBROWSER - Explorador y gestor de archivos web
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "192.168.50.150:8082:80"
+    volumes:
+      - /home:/srv
+      - ./filebrowser-config/config.json:/etc/filebrowser.json
+      - ./filebrowser-config/database.db:/database.db
+    environment:
+      - TZ=Europe/Madrid
+      - FILEBROWSER_ADMIN_PASSWORD=Pacopicopoco.7 # <--- Tu contraseña de administrador automática
