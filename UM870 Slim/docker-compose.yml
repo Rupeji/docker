@@ -20,9 +20,9 @@ services:
       - "80:80/tcp"
       - "443:443/tcp"
     environment:
-      - CACHE_DISK_SIZE=1000g
-      - CACHE_MEM_SIZE=500m
-      - CACHE_MAX_AGE=3560d
+      - CACHE_DISK_SIZE=2500g
+      - CACHE_MEM_SIZE=4096m
+      - CACHE_MAX_AGE=356d
       - UPSTREAM_DNS=1.1.1.1
     volumes:
       - ./cache-data:/data/cache
@@ -79,10 +79,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 4 1 * *
+      - WATCHTOWER_SCHEDULE=0 0 3 1 * * # <-- Modificado a las 3:00 AM el día 1 de cada mes
       - TZ=Europe/Madrid
       - WATCHTOWER_NOTIFICATIONS=shoutrrr
       - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
+      - WATCHTOWER_NOTIFICATIONS_HOSTNAME=ArchServer-1 # <-- Así el mensaje en Discord llevará este título
 
   # 7. PORTAINER - Interfaz web de gestión para Docker
   portainer:
