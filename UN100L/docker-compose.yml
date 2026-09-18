@@ -6,9 +6,9 @@ volumes:
   immich_db:
 
 services:
-  # --- WATCHTOWER ---
+# --- WATCHTOWER ---
   watchtower:
-    image: nickfedor/watchtower:latest
+    image: nickfedor/watchtower:latest # <-- Cambiado a la versión actualizada y activa
     container_name: watchtower
     restart: always
     volumes:
@@ -19,6 +19,7 @@ services:
       - TZ=Europe/Madrid
       - WATCHTOWER_NOTIFICATIONS=shoutrrr
       - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
+      - WATCHTOWER_NOTIFICATIONS_HOSTNAME=ArchServer-2 # <-- Así el mensaje en Discord llevará este título
 
   # --- PORTAINER ---
   portainer:
@@ -34,45 +35,50 @@ services:
       - "192.168.50.100:9443:9443"
       - "192.168.50.100:9000:9000"
 
-
-  # --- PI-HOLE ---
-  pihole:
-    image: pihole/pihole:latest
-    container_name: pihole
-    restart: always
-    networks:
-      - default
-    ports:
-      - "${LANCACHE_IP}:53:53/tcp"
-      - "${LANCACHE_IP}:53:53/udp"
-      - "${LANCACHE_IP}:8080:80/tcp"
-    environment:
-      - REMS_ALLOWED_HOSTS=${LANCACHE_IP},${LANCACHE_IP}:8080,localhost
-      - TZ=${TZ}
-      - WEBPASSWORD=${PIHOLE_PASSWORD}
-      - PIHOLE_DNS_=1.1.1.1;8.8.8.8
+  # --- ADGUARD HOME (REEMPLAZO DE PI-HOLE) ---
+  adguard-backup:
+    image: adguard/adguardhome:latest
+    container_name: adguard-backup
+    restart: unless-stopped
+    network_mode: host
     volumes:
-      - ./data/pihole:/etc/pihole
-      - ./data/dnsmasq.d:/etc/dnsmasq.d
+      - ./data/adguard-work:/opt/adguardhome/work
+      - ./data/adguard-data:/opt/adguardhome/conf
     labels:
-      - "com.centurylinklabs.watchtower.enable=false"
+      - "com.centurylinklabs.watchtower.enable=false"  # <-- Dos espacios más a la derecha que antes
+
+
+  # --- ADGUARD HOME SYNC (EL SINCRONIZADOR) ---
+  adguard-sync:
+    image: ghcr.io/bakito/adguardhome-sync:latest
+    container_name: adguard-sync
+    restart: unless-stopped
+    command: run
+    environment:
+      - ORIGIN_URL=http://192.168.50.150:3001
+      - ORIGIN_USERNAME=inhumano
+      - ORIGIN_PASSWORD=Pacopicopoco.7
+      - REPLICA_URL=http://192.168.50.100:3001  # <-- CAMBIADO AQUÍ CON TU IP FIJA
+      - REPLICA_USERNAME=inhumano
+      - REPLICA_PASSWORD=Pacopicopoco.7
+      - CRON=*/10 * * * * # Ejecuta una sincronización automática en segundo plano cada 10 minutos
+      - TZ=Europe/Madrid
 
   # --- HOMEPAGE ---
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     restart: always
-    networks:
-      - default
     ports:
-      - "192.168.50.100:3000:3000"
+      - "192.168.50.100:3006:3000" # <-- Cambiado de 3000 a 3006 externo
     volumes:
       - ./data/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /:/mnt/host:ro
     environment:
       - TZ=Europe/Madrid
-      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.100,192.168.50.100:3000
+      - HOMEPAGE_ALLOWED_HOSTS=192.168.50.100,192.168.50.100:3006 # <-- Cambiado aquí también
+
 
   # --- GLANCES ---
   glances:
@@ -99,8 +105,6 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     restart: always
-    networks:
-      - default
     environment:
       - PUID=1000
       - PGID=1000
@@ -127,20 +131,16 @@ services:
       - "192.168.50.100:8082:80"
     volumes:
       - /home:/srv
-      - /home/inhumano/docker/data/filebrowser/config.json:/etc/filebrowser.json
-      - /home/inhumano/docker/data/filebrowser/database.db:/database.db
+      - ./data/filebrowser/config.json:/etc/filebrowser.json
+      - ./data/filebrowser/database.db:/database.db
     environment:
       - TZ=Europe/Madrid
-      - FILEBROWSER_ADMIN_PASSWORD=Pacopicopoco.7 # <--- Agrega tu contraseña aquí
-
 
   # --- SERVIDOR MULTIMEDIA ---
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     restart: always
-    networks:
-      - default
     group_add:
       - "987"
     devices:
@@ -160,8 +160,6 @@ services:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     restart: always
-    networks:
-      - default
     environment:
       - LOG_LEVEL=debug
       - TZ=Europe/Madrid
@@ -175,8 +173,6 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     restart: always
-    networks:
-      - default
     environment:
       - PUID=1000
       - PGID=1000
@@ -192,8 +188,6 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     restart: always
-    networks:
-      - default
     environment:
       - PUID=1000
       - PGID=1000
@@ -208,8 +202,6 @@ services:
   immich-server:
     image: ghcr.io/immich-app/immich-server:release
     container_name: immich_server
-    networks:
-      - default
     volumes:
       - ./data/immich/photos:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -232,8 +224,6 @@ services:
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:release
     container_name: immich_machine_learning
-    networks:
-      - default
     volumes:
       - ./data/immich/cache:/cache
     restart: always
@@ -242,8 +232,6 @@ services:
   immich-database:
     image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
     container_name: immich_database
-    networks:
-      - default
     environment:
       - POSTGRES_DB=immich
       - POSTGRES_USER=postgres
@@ -256,6 +244,4 @@ services:
   immich-redis:
     image: redis:7-alpine
     container_name: immich_redis
-    networks:
-      - default
     restart: always
