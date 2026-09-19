@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# --- CONFIGURACIÓN DE LOS ENLACES DE GOOGLE DRIVE ---
+# --- CONFIGURACION DE LOS ENLACES DE GOOGLE DRIVE ---
 ID_CONFIG="1KZw73n2S4cDyvUNAkzTuV-yEd4cENS1D"
 ID_UFW="12VhpxhTgp7Hjnpg3KFnm2KY11arNX2LA"
 
@@ -10,20 +10,20 @@ FILE_UFW="backup_homeserver_ufw.tar.gz"
 mostrar_menu() {
     clear
     echo "=========================================================="
-    echo "   SCRIPT DE MIGRACIÓN PARA ARCH SERVER (CON GOOGLE DRIVE) "
+    echo "   SCRIPT DE MIGRACION PARA ARCH SERVER (CON GOOGLE DRIVE) "
     echo "=========================================================="
     echo "1) Crear Respaldo (Ejecutar en el servidor ACTUAL)"
-    echo "2) Restaurar Servidor Nuevo (Descarga automática desde Drive)"
+    echo "2) Restaurar Servidor Nuevo (Descarga automatica desde Drive)"
     echo "3) Salir"
     echo "=========================================================="
-    read -p "Selecciona una opción [1-3]: " opcion
+    read -p "Selecciona una opcion [1-3]: " opcion
 }
 
 crear_respaldo() {
     echo ""
     if [ ! -f "docker-compose.yml" ]; then
         echo "ERROR: No se encuentra el archivo 'docker-compose.yml' en esta carpeta."
-        echo "Asegúrate de ejecutar el script en la raíz de tus contenedores."
+        echo "Asegurate de ejecutar el script en la raiz de tus contenedores."
         exit 1
     fi
 
@@ -35,7 +35,7 @@ crear_respaldo() {
 
     echo ""
     echo "=========================================================="
-    echo " ¡RESPALDO CREADO CON ÉXITO! "
+    echo " RESPALDO CREADO CON EXITO "
     echo "=========================================================="
     echo "Se han generado los archivos locales:"
     echo "  - $FILE_CONFIG"
@@ -48,27 +48,29 @@ restaurar_servidor() {
     echo ""
     # Asegurar que el usuario corre el script como root/sudo
     if [ "$EUID" -ne 0 ]; then
-        echo "ERROR: Debes ejecutar la restauración usando 'sudo ./migracion_homeserver.sh'"
+        echo "ERROR: Debes ejecutar la restauracion usando 'sudo ./migracion_homeserver.sh'"
         exit 1
     fi
 
-    echo "🌐 Descargando archivos de configuración desde Google Drive..."
-    # Comandos curl optimizados para saltar el aviso de archivos grandes de Drive si fuera necesario
+    echo "Actualizando repositorios e instalando curl..."
+    pacman -Sy --needed curl --noconfirm
+
+    echo "Descargando archivos de configuración desde Google Drive..."
     curl -L "https://google.com" -o "$FILE_CONFIG"
     curl -L "https://google.com" -o "$FILE_UFW"
 
     if [ ! -f "$FILE_CONFIG" ] || [ ! -f "$FILE_UFW" ]; then
-        echo "ERROR: La descarga desde Google Drive ha fallado. Verifica tu conexión a internet."
+        echo "ERROR: La descarga desde Google Drive ha fallado. Verifica tu conexion a internet."
         exit 1
     fi
 
     echo "Instalar paquetes necesarios en Arch Linux (Docker + UFW)..."
-    pacman -Sy --needed docker docker-compose ufw --noconfirm
+    pacman -S --needed docker docker-compose ufw --noconfirm
 
     echo "Creando estructura de carpetas multimedia limpias..."
     mkdir -p /home/data/media/movies /home/data/media/tv /home/data/torrents/completados
     
-    echo "Ajustando permisos numéricos (1000:1000) para evitar bloqueos..."
+    echo "Ajustando permisos numericos (1000:1000) para evitar bloqueos..."
     chown -R 1000:1000 /home/data
     chmod -R 775 /home/data
 
@@ -88,7 +90,7 @@ restaurar_servidor() {
 
     echo ""
     echo "=========================================================="
-    echo " ¡MIGRACIÓN COMPLETADA CON ÉXITO! "
+    echo " MIGRACION COMPLETADA CON EXITO "
     echo "=========================================================="
     echo "Todo tu servidor ha sido restaurado con sus permisos intactos."
     echo "Verifica los servicios entrando desde el navegador de otro PC."
@@ -102,5 +104,5 @@ case $opcion in
     1) crear_respaldo ;;
     2) restaurar_servidor ;;
     3) echo "Saliendo del script..."; exit 0 ;;
-    *) echo "Opción no válida."; exit 1 ;;
+    *) echo "Opcion no valida."; exit 1 ;;
 esac
