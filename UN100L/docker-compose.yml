@@ -136,6 +136,34 @@ services:
     environment:
       - TZ=Europe/Madrid
 
+
+  # --- FLARESOLVERR: EVITAR BLOQUEOS Y CLOUDFLARE ---
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: always
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:8191:8191"
+
+
+  # --- PROWLARR: INDEXADOR Y BUSCADOR CENTRALIZADO ---
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:9696:9696"
+    volumes:
+      - ./data/prowlarr:/config
+
+
   # --- SERVIDOR MULTIMEDIA ---
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
