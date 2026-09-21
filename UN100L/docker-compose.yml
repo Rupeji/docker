@@ -118,28 +118,25 @@ services:
       - /home/inhumano/docker-arr/config/qbittorrent:/config
       - /home/data:/data
 
-  # --- FILEBROWSER ---
-  filebrowser:
-    image: filebrowser/filebrowser:latest
-    container_name: filebrowser
+  # --- JACKETT: INDEXADOR COMPLEMENTARIO PARA RASTREADORES HISPANOS ---
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
     restart: always
-    security_opt:
-      - no-new-privileges:true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    ports:
+      - "192.168.50.100:9117:9117"
+    volumes:
+      - ./data/jackett:/config
     networks:
       - default
-    ports:
-      - "192.168.50.100:8082:80"
-    volumes:
-      - /home:/srv
-      - ./data/filebrowser/config.json:/etc/filebrowser.json
-      - ./data/filebrowser/database.db:/database.db
-    environment:
-      - TZ=Europe/Madrid
-
 
   # --- FLARESOLVERR: EVITAR BLOQUEOS Y CLOUDFLARE ---
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:latest
+    image: 21hsmw/flaresolverr:nodriver 
     container_name: flaresolverr
     restart: always
     environment:
@@ -147,7 +144,8 @@ services:
       - TZ=Europe/Madrid
     ports:
       - "192.168.50.100:8191:8191"
-
+    networks:
+      - default
 
   # --- PROWLARR: INDEXADOR Y BUSCADOR CENTRALIZADO ---
   prowlarr:
@@ -162,7 +160,8 @@ services:
       - "192.168.50.100:9696:9696"
     volumes:
       - ./data/prowlarr:/config
-
+    networks:
+      - default
 
   # --- SERVIDOR MULTIMEDIA ---
   jellyfin:
@@ -180,8 +179,10 @@ services:
     ports:
       - "192.168.50.100:8096:8096"
     volumes:
-      - /home/inhumano/docker-arr/config/jellyfin:/config
+      # 👇 AHORA SÍ: RUTA RELATIVA HOMOGÉNEA COMO LAS DEMÁS aplicaciones
+      - ./data/jellyfin:/config
       - /home/data:/data:ro
+
 
   # --- JELLYSEERR ---
   jellyseerr:
@@ -195,6 +196,8 @@ services:
       - "192.168.50.100:5055:5055"
     volumes:
       - ./data/jellyseerr:/app/config
+    networks:
+      - default
 
   # --- SONARR ---
   sonarr:
@@ -210,6 +213,8 @@ services:
     volumes:
       - ./data/sonarr:/config
       - /home/data:/data
+    networks:
+      - default
 
   # --- RADARR ---
   radarr:
@@ -225,6 +230,25 @@ services:
     volumes:
       - ./data/radarr:/config
       - /home/data:/data
+    networks:
+      - default
+
+ # --- FILEGATOR - Gestor de archivos web (Alternativa a Filebrowser) ---
+  filegator:
+    image: filegator/filegator:latest
+    container_name: filegator
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default                            # Conectado a homeserver_network
+    ports:
+      - "192.168.50.100:8082:8080"        # Mapeado a tu IP del segundo server en puerto 8082
+    volumes:
+      - /home:/var/www/filegator/repository # Mapea la raíz /home de ArchServer-2
+    environment:
+      - TZ=Europe/Madrid
+      - FILEGATOR_PRIVATE=/var/www/filegator/private # Evita el error de permisos en logs locales
 
   # --- IMMICH: SERVIDOR DE FOTOS ---
   immich-server:
