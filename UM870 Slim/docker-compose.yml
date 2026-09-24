@@ -1,21 +1,23 @@
 services:
-  # 1. ADGUARD HOME - DNS Centralizador y Bloqueador
+  # 1. ADGUARD HOME - DNS Centralizador (CRÍTICO: No actualizar automáticamente)
   adguard:
     image: adguard/adguardhome:latest
     container_name: adguard-home
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false" # <- ESTA LÍNEA LO 
     restart: unless-stopped
     network_mode: host
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     volumes:
       - ./adguard-work:/opt/adguardhome/work
       - ./adguard-data:/opt/adguardhome/conf
 
-  # 2. LANCACHE MONOLITHIC - Servidor Caché de Juegos
+  # 2. LANCACHE MONOLITHIC - Servidor Caché (Estable: Evitar cambios inesperados)
   monolithic:
     image: lancachenet/monolithic:latest
     container_name: lancache-monolithic
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
@@ -28,87 +30,102 @@ services:
       - ./cache-data:/data/cache
       - ./cache-logs:/data/logs
 
-  # 3. SKARONATOR (lancache-dns-sync) - Sincronizador de Dominios
+  # 3. SKARONATOR - Sincronizador de Dominios (Seguro de actualizar)
   skaronator:
     image: ghcr.io/skaronator/lancache-dns-sync:latest
     container_name: lancache-skaronator
     restart: unless-stopped
     depends_on:
       - adguard
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     environment:
       - ADGUARD_API=http://192.168.50.150:3001
       - ADGUARD_USERNAME=inhumano
-      - ADGUARD_PASSWORD=Pacopicopoco.7  # <-- Asegúrate de poner tu contraseña real
+      - ADGUARD_PASSWORD=Pacopicopoco.7
       - LANCACHE_SERVER=192.168.50.150
       - SERVICE_NAMES=*
       - CRON_SCHEDULE=0 4 * * *
 
-  # 4. LANCACHE MANAGER - Interfaz de control y analíticas
+  # 4. LANCACHE MANAGER - Interfaz de control (Seguro de actualizar con tus fixes)
   manager:
     image: ghcr.io/regix1/lancache-manager:latest
     container_name: lancache-manager
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
-      - "8080:80/tcp"
+      - "8085:80/tcp"
+    environment:
+      - DOCKER_NETWORK=lancache-stack_default
+      - DOCKER_DNS=192.168.50.150
     volumes:
       - ./manager-data:/data
       - ./cache-logs:/logs
       - /var/run/docker.sock:/var/run/docker.sock
 
-  # 5. LANCACHE DASHBOARD - Compilado directamente desde GitHub con tu sintaxis
+  # 5. LANCACHE DASHBOARD - Compilado de GitHub (RIESGO: No actualizar automáticamente)
   dashboard:
     container_name: lancache-dashboard
     restart: always
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     build:
-      context: https://github.com/imahmud1/lancache-dashboard.git#main
+      context: https://github.com
     ports:
-      - "3010:3000/tcp"                 # Mapea el puerto 3010 externo al 3000 interno de Next.js
+      - "3010:3000/tcp"
     environment:
-      - LOG_PATH=/logs/access.log       # Ruta del archivo log dentro del contenedor
-      - DB_PATH=/app/data/lancache.db   # Ruta de persistencia de la base de datos
+      - LOG_PATH=/logs/access.log
+      - DB_PATH=/app/data/lancache.db
     volumes:
-      - ./cache-logs:/logs:ro           # Pasa la carpeta de logs de Monolithic en modo lectura
-      - ./dashboard-data:/app/data      # Pasa la carpeta de datos persistente
+      - ./cache-logs:/logs:ro
+      - ./dashboard-data:/app/data
 
-  # 6. WATCHTOWER - Actualizador automático de imágenes Docker
+  # 6. WATCHTOWER - Actualizador automático
   watchtower:
     image: nickfedor/watchtower:latest
     container_name: watchtower
     restart: always
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 3 1 * * # <-- Modificado a las 3:00 AM el día 1 de cada mes
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_SCHEDULE=0 0 3 1 * *
       - TZ=Europe/Madrid
       - WATCHTOWER_NOTIFICATIONS=shoutrrr
       - WATCHTOWER_NOTIFICATION_URL=discord://CK-oL_-8_H0yQfGMBq8Nvy7FSJ6jxmdy6M-ZN4Kfg48ymeUHiVI1NBdIiT5pFAbz5Oxy@1204829342484537384
-      - WATCHTOWER_NOTIFICATIONS_HOSTNAME=ArchServer-1 # <-- Así el mensaje en Discord llevará este título
+      - WATCHTOWER_NOTIFICATIONS_HOSTNAME=ArchServer-1
 
-  # 7. PORTAINER - Interfaz web de gestión para Docker
+  # 7. PORTAINER - Panel Web de Docker (CRÍTICO: No actualizar automáticamente)
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: always
     security_opt:
       - no-new-privileges:true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - "192.168.50.150:9443:9443"
       - "192.168.50.150:9000:9000"
     environment:
-      - PORTAINER_NO_SETUP_TOKEN=1 # <--- Añade esta línea aquí
+      - PORTAINER_NO_SETUP_TOKEN=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer-data:/data
 
-
-  # 8. HOMEPAGE - Panel de inicio personalizable (Dashboard de servicios)
+  # 8. HOMEPAGE - Dashboard Personal (Seguro de actualizar)
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     restart: always
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
-      - "192.168.50.150:3005:3000" # Mapeado a 3005 externo para evitar conflicto con el puerto 3000 del contenedor dashboard
+      - "192.168.50.150:3005:3000"
     volumes:
       - ./homepage-config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -117,13 +134,15 @@ services:
       - TZ=Europe/Madrid
       - HOMEPAGE_ALLOWED_HOSTS=192.168.50.150,192.168.50.150:3005
 
-  # 9. GLANCES - Monitorización avanzada del sistema en tiempo real
+  # 9. GLANCES - Monitorización (Seguro de actualizar)
   glances:
     image: nicolargo/glances:latest-full
     container_name: glances
     restart: always
     pid: host
     privileged: true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     environment:
       - GLANCES_OPT=-w
       - TZ=Europe/Madrid
@@ -135,17 +154,19 @@ services:
       - /:/mnt/host:ro
       - /etc/os-release:/etc/os-release:ro
 
-  # 10. FILEGATOR - Gestor de archivos web multiusuario (Alternativa a Filebrowser)
+  # 10. FILEGATOR - Gestor de archivos (Seguro de actualizar)
   filegator:
     image: filegator/filegator:latest
     container_name: filegator
     restart: always
     security_opt:
       - no-new-privileges:true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - "192.168.50.150:8082:8080"
     volumes:
-      - /home:/var/www/filegator/repository # Mapea tu almacenamiento /home
+      - /home:/var/www/filegator/repository
     environment:
       - TZ=Europe/Madrid
-      - FILEGATOR_PRIVATE=/var/www/filegator/private # Fuerza al contenedor a usar su estructura interna por defecto
+      - FILEGATOR_PRIVATE=/var/www/filegator/private
