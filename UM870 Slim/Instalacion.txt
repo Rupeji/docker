@@ -1,1 +1,25 @@
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
 
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    192.168.50.0/24            # SSH Local
+53                         ALLOW IN    192.168.50.0/24            # AdGuard DNS
+3001/tcp                   ALLOW IN    192.168.50.0/24            # AdGuard Web
+80/tcp                     ALLOW IN    192.168.50.0/24            # LanCache HTTP
+443/tcp                    ALLOW IN    192.168.50.0/24            # LanCache HTTPS
+3001/tcp                   ALLOW IN    172.18.0.0/16              # Docker a AdGuard API
+53/udp                     ALLOW IN    172.18.0.0/16              # Docker a AdGuard DNS UDP
+53/tcp                     ALLOW IN    172.18.0.0/16              # Docker a AdGuard DNS TCP
+
+172.18.0.3 80/tcp          ALLOW FWD   192.168.50.0/24            # LanCache HTTP Local
+172.18.0.3 443/tcp         ALLOW FWD   192.168.50.0/24            # LanCache HTTPS Local
+172.18.0.8 9443/tcp        ALLOW FWD   192.168.50.0/24            # Portainer Local
+172.18.0.7 3000/tcp        ALLOW FWD   192.168.50.0/24            # Homepage Local
+172.18.0.4 3000/tcp        ALLOW FWD   192.168.50.0/24            # Dashboard Local
+172.18.0.2 80/tcp          ALLOW FWD   192.168.50.0/24            # Manager Local
+172.18.0.5 8080/tcp        ALLOW FWD   192.168.50.0/24            # FileGator Local
+Anywhere                   ALLOW FWD   172.18.0.0/16
+172.18.0.0/16              ALLOW FWD   Anywhere
